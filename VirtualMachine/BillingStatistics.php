@@ -112,7 +112,7 @@ class OnApp_VirtualMachine_BillingStatistics extends OnApp {
                 $this->fields = $this->initFields( 3.0 );
 
                 unset( $this->fields['cost'] );
-                unset( $this->fields['billing_stats'] );
+                // unset( $this->fields['billing_stats'] );
 
                 $this->fields['currency_code'] = array(
                     ONAPP_FIELD_MAP       => '_currency_code',
