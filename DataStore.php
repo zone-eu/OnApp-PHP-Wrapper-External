@@ -26,6 +26,8 @@
  */
 define( 'ONAPP_GETRESOURCE_DATASTORES_LIST_BY_HYPERVISOR_GROUP_ID', 'hypervisor_zones_data_stores' );
 
+define( 'ONAPP_GETRESOURCE_DATASTORE_IOLIMITS', 'io_limits' );
+
 /**
  * Data Stores
  *
@@ -196,7 +198,52 @@ class OnApp_DataStore extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.2 );
                 break;
-
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                $this->fields['auto_healing'] = array(
+                    ONAPP_FIELD_MAP  => '_auto_healing',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                $this->fields['read_iops'] = array(
+                    ONAPP_FIELD_MAP  => '_read_iops',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['write_iops'] = array(
+                    ONAPP_FIELD_MAP  => '_write_iops',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['read_throughput'] = array(
+                    ONAPP_FIELD_MAP  => '_read_throughput',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['write_throughput'] = array(
+                    ONAPP_FIELD_MAP  => '_write_throughput',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['io_limits']                            = array(
+                    ONAPP_FIELD_MAP  => '_io_limits',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                $this->fields['epoch'] = array(
+                    ONAPP_FIELD_MAP  => '_epoch',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -216,6 +263,10 @@ class OnApp_DataStore extends OnApp {
                  * @format {:action=>"index", :controller=>"data_stores"}
                  */
                 $resource = 'settings/hypervisor_zones/' . $this->_hypervisor_group_id . '/data_stores';
+                break;
+
+            case ONAPP_GETRESOURCE_DATASTORE_IOLIMITS:
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/io_limits';
                 break;
 
             case ONAPP_GETRESOURCE_DEFAULT:
@@ -301,4 +352,34 @@ class OnApp_DataStore extends OnApp {
 
         return ( is_array( $result ) || ! $result ) ? $result : array( $result );
     }
+
+    function ioLimits( $read_iops = null, $write_iops = null, $read_throughput = null, $write_throughput = null, $id = null ) {
+        if ( $id ) {
+            $this->_id = $id;
+        }
+        if ( $read_iops ) {
+            $this->_read_iops = $read_iops;
+        }
+        if ( $write_iops ) {
+            $this->_write_iops = $write_iops;
+        }
+        if ( $read_throughput ) {
+            $this->_read_throughput = $read_throughput;
+        }
+        if ( $write_throughput ) {
+            $this->_write_throughput = $write_throughput;
+        }
+
+        $data = array(
+            'root'      => 'io_limits',
+            'data' => array(
+                'read_iops'          => $this->_read_iops,
+                'write_iops'         => $this->_write_iops,
+                'read_throughput'    => $this->_read_throughput,
+                'write_throughput'   => $this->_write_throughput,
+            )
+        );
+        $this->sendPut( ONAPP_GETRESOURCE_DATASTORE_IOLIMITS, $data );
+    }
+
 }

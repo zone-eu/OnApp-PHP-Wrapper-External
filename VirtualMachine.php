@@ -117,6 +117,12 @@ define( 'ONAPP_GETRESOURCE_MIGRATE', 'migrate' );
  *
  *
  */
+define( 'ONAPP_GETRESOURCE_MIGRATION', 'migration' );
+
+/**
+ *
+ *
+ */
 define( 'ONAPP_GETRESOURCE_VIRTUALMACHINES_STATUSES', 'statusAll' );
 
 /**
@@ -154,6 +160,26 @@ define( 'ONAPP_GETRESOURCE_PURGE_ALL', 'purge_all' );
  * Purge File(s)
  */
 define( 'ONAPP_GETRESOURCE_PURGE', 'purge' );
+
+/**
+ * Purge File(s)
+ */
+define( 'ONAPP_GETRESOURCE_WITH_DECRYPTED_PASSWORD', 'with_decrypted_password' );
+
+/**
+ * Edit FQDN
+ */
+define( 'ONAPP_EDIT_FQDN', 'fqdn' );
+
+/**
+ * Enable Acceleration for Virtual Server
+ */
+define( 'ONAPP_ENABLE_ACCELERATION', 'acceleration.enable' );
+
+/**
+ * Disable Acceleration for Virtual Server
+ */
+define( 'ONAPP_DISABLE_ACCELERATION', 'acceleration.disable' );
 
 /**
  * Virtual Machines
@@ -644,6 +670,91 @@ class OnApp_VirtualMachine extends OnApp {
                     ONAPP_FIELD_TYPE => 'string',
                 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                $this->fields['built_from_ova']     = array(
+                    ONAPP_FIELD_MAP  => '_built_from_ova',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['vcenter_moref']     = array(
+                    ONAPP_FIELD_MAP  => '_vcenter_moref',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                $this->fields['template_version'] = array(
+                    ONAPP_FIELD_MAP  => '_template_version',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['recipe_joins_attributes'] = array(
+                    ONAPP_FIELD_MAP  => '_recipe_joins_attributes',
+                    ONAPP_FIELD_TYPE => 'array',
+                );
+                $this->fields['custom_variables_attributes'] = array(
+                    ONAPP_FIELD_MAP   => '_custom_variables_attributes',
+                    ONAPP_FIELD_TYPE  => 'array',
+                    ONAPP_FIELD_CLASS => 'VirtualMachine_CustomVariablesAttribute',
+                );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                $this->fields['domain'] = array(
+                    ONAPP_FIELD_MAP           => '_domain',
+                    ONAPP_FIELD_TYPE          => 'string',
+                    ONAPP_FIELD_DEFAULT_VALUE => 'localdomain',
+                );
+                $this->fields['user_group_id'] = array(
+                    ONAPP_FIELD_MAP  => '_user_group_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                $this->fields['vdc_id'] = array(
+                    ONAPP_FIELD_MAP  => '_vdc_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                $this->fields['data_store_id'] = array(
+                    ONAPP_FIELD_MAP  => '_data_store_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                $this->fields['network_id'] = array(
+                    ONAPP_FIELD_MAP  => '_network_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                $this->fields['openstack_id'] = array(
+                    ONAPP_FIELD_MAP  => '_openstack_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['vcenter_reserved_memory'] = array(
+                    ONAPP_FIELD_MAP  => '_vcenter_reserved_memory',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                $this->fields['service_addon_ids'] = array(
+                    ONAPP_FIELD_MAP  => '_service_addon_ids',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['properties']             = array(
+                    ONAPP_FIELD_MAP  => '_properties',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['cpu_topology']           = array(
+                    ONAPP_FIELD_MAP  => '_cpu_topology',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['acceleration_allowed']   = array(
+                    ONAPP_FIELD_MAP  => '_acceleration_allowed',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                break;
         }
 
         if ( is_null( $this->_id ) ) {
@@ -825,6 +936,20 @@ class OnApp_VirtualMachine extends OnApp {
                 $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/migrate';
                 break;
 
+            case ONAPP_GETRESOURCE_MIGRATION:
+
+                /**
+                 * ROUTE :
+                 *
+                 * @name migrate_virtual_machine
+                 * @method POST
+                 * @alias   /virtual_machines/:id/migration(.:format)
+                 * @format  {:controller=>"virtual_machines", :action=>"migration"}
+                 */
+
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/migration';
+                break;
+
             case ONAPP_GETRESOURCE_SUSPEND_VM:
                 /**
                  * ROUTE :
@@ -952,6 +1077,51 @@ class OnApp_VirtualMachine extends OnApp {
                 $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/purge_all';
                 break;
 
+            case ONAPP_GETRESOURCE_WITH_DECRYPTED_PASSWORD:
+                /**
+                 * ROUTE :
+                 *
+                 * @name with_decrypted_password
+                 * @method GET
+                 * @alias    /virtual_machines/:id/with_decrypted_password(.:format)
+                 * @format   {:controller=>"virtual_machines", :action=>"with_decrypted_password"}
+                 */
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/with_decrypted_password';
+                break;
+            case ONAPP_EDIT_FQDN:
+                /**
+                 * ROUTE :
+                 *
+                 * @name edit_fqdn
+                 * @method PATCH
+                 * @alias    /virtual_machines/:id/fqdn(.:format)
+                 * @format   {:controller=>"virtual_machines", :action=>"edit_fqdn"}
+                 */
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/fqdn';
+                break;
+            case ONAPP_ENABLE_ACCELERATION:
+                /**
+                 * ROUTE :
+                 *
+                 * @name Enable Acceleration for Virtual Server
+                 * @method PUT
+                 * @alias    /virtual_machines/:id/acceleration.enable(.:format)
+                 * @format   {:controller=>"virtual_machines", :action=>"acceleration.enable"}
+                 */
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/' . ONAPP_ENABLE_ACCELERATION;
+                break;
+            case ONAPP_DISABLE_ACCELERATION:
+                /**
+                 * ROUTE :
+                 *
+                 * @name Enable Acceleration for Virtual Server
+                 * @method PUT
+                 * @alias    /virtual_machines/:id/acceleration.disable(.:format)
+                 * @format   {:controller=>"virtual_machines", :action=>"acceleration.disable"}
+                 */
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/' . ONAPP_DISABLE_ACCELERATION;
+                break;
+
             default:
                 /**
                  * ROUTE :
@@ -1010,6 +1180,10 @@ class OnApp_VirtualMachine extends OnApp {
             ONAPP_RESET_ROOT_PASSWORD,
             ONAPP_GETRESOURCE_PURGE_ALL,
             ONAPP_GETRESOURCE_PURGE,
+            ONAPP_GETRESOURCE_WITH_DECRYPTED_PASSWORD,
+            ONAPP_EDIT_FQDN,
+            ONAPP_ENABLE_ACCELERATION,
+            ONAPP_DISABLE_ACCELERATION,
         );
 
         if ( in_array( $action, $actions ) ) {
@@ -1134,6 +1308,38 @@ class OnApp_VirtualMachine extends OnApp {
         );
 
         $this->sendPost( ONAPP_GETRESOURCE_MIGRATE, $data );
+    }
+
+    /**
+     * Migrates Virtual Machine to the other hypervisor
+     *
+     * @param int $id virtual machine id
+     * @param int $hypervisor_id destination hypervisor id
+     */
+    function migration( $id, $hypervisor_id, $cold_migrate_on_rollback = false, $migration_type=null, $data_store_id=null, $virtual_machine_identifier=null ) {
+        if ( $id ) {
+            $this->_id = $id;
+        }
+        $data = array(
+            'root' => 'tmp_holder',
+            'data' => array(
+                'destination' => $hypervisor_id,
+            ),
+        );
+        if (  $migration_type ) {
+            $data['data']['migration_type'] = $migration_type;
+        }
+        if (  $data_store_id ) {
+            $data['data']['data_store_id'] = $data_store_id;
+        }
+        if (  $virtual_machine_identifier ) {
+            $data['data']['virtual_machine_identifier'] = $virtual_machine_identifier;
+        }
+        if ( $cold_migrate_on_rollback ) {
+            $data['data']['cold_migrate_on_rollback'] = "1";
+        }
+
+        $this->sendPost( ONAPP_GETRESOURCE_MIGRATION, $data );
     }
 
     /**
@@ -1322,6 +1528,8 @@ class OnApp_VirtualMachine extends OnApp {
         }
 
         $fields = $this->fields;
+        
+        $this->unsetFields( array( 'cpu_threads' ) );
 
         $this->fields['primary_disk_size']              = array(
             ONAPP_FIELD_MAP           => '_primary_disk_size',
@@ -1384,7 +1592,23 @@ class OnApp_VirtualMachine extends OnApp {
             ONAPP_FIELD_MAP  => '_required_public_ip_address',
             ONAPP_FIELD_TYPE => 'boolean',
         );
-
+        $this->fields['datacenter_id']                  = array(
+            ONAPP_FIELD_MAP  => '_datacenter_id',
+            ONAPP_FIELD_TYPE => 'integer',
+        );
+        $this->fields['cluster_id']                     = array(
+            ONAPP_FIELD_MAP  => '_cluster_id',
+            ONAPP_FIELD_TYPE => 'integer',
+        );
+        $this->fields['primary_data_store_id']          = array(
+            ONAPP_FIELD_MAP  => '_primary_data_store_id',
+            ONAPP_FIELD_TYPE => 'integer',
+        );
+        $this->fields['swap_data_store_id']             = array(
+            ONAPP_FIELD_MAP  => '_swap_data_store_id',
+            ONAPP_FIELD_TYPE => 'integer',
+        );
+        
         parent::save();
 
         $this->fields = $fields;
@@ -1521,4 +1745,100 @@ class OnApp_VirtualMachine extends OnApp {
 
         return $this->sendPost( ONAPP_GETRESOURCE_PURGE, $data );
     }
+
+    function viewDecryptedPassword($encryptionKey) {
+        //initial_root_password_encryption_key=encryptionkey
+        return $this->sendGet( ONAPP_GETRESOURCE_WITH_DECRYPTED_PASSWORD, null, array(initial_root_password_encryption_key => $encryptionKey) );
+    }
+    
+    function edit_fqdn($hostname, $domain) {
+        $data = array(
+            'root' => $this->_tagRoot,
+            'data' => array(
+                'hostname'  => $hostname,
+                'domain'    => $domain,
+            )
+        );
+        
+        return $this->sendPatch( ONAPP_EDIT_FQDN, $data );
+    }
+    
+    public function addVsFromOvaTemplate($template_id, $label, $hostname, $domain='localdomain', $initial_root_password=null, $initial_root_password_confirmation=null, $hypervisor_group_id=null, $hypervisor_id=null, $memory, $cpus, $cpu_shares, $cpu_units, $cpu_topology, array $disks_attributes, array $network_interfaces_attributes, $required_automatic_backup=0, $required_virtual_machine_build=1, $required_virtual_machine_startup=0, $acceleration=false){
+        
+        $data = array(
+            'root' => $this->_tagRoot,
+            'data' => array(
+                'template_id'                      => $template_id,
+                'label'                            => $label,
+                'hostname'                         => $hostname,
+                'domain'                           => $domain,
+                'hypervisor_group_id'              => $hypervisor_group_id,
+                'hypervisor_id'                    => $hypervisor_id,
+                'memory'                           => $memory,
+                'cpus'                             => $cpus,
+                'cpu_shares'                       => $cpu_shares,
+                'cpu_units'                        => $cpu_units,
+                'cpu_topology'                     => $cpu_topology,
+                'disks_attributes'                 => $disks_attributes,
+                'network_interfaces_attributes'    => $network_interfaces_attributes,
+                'required_automatic_backup'        => $required_automatic_backup,
+                '$required_virtual_machine_build'  => $required_virtual_machine_build,
+                'required_virtual_machine_startup' => $required_virtual_machine_startup,
+                'acceleration' => $acceleration,
+            )
+        );
+        if ( ! is_null( $initial_root_password ) && $initial_root_password != "" ) {
+            $pattern = "/^\S*(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[\,\.\;\:\_\-\@\~\!\*\+\{\}\[\]\`\?\#\$\=\/\\\])[a-zA-Z0-9\,\.\;\:\_\-\@\~\!\*\+\{\}\[\]\`\?\#\$\=\/\\\]{6,32}$/";
+
+            if ( preg_match( $pattern, $initial_root_password ) ) {
+                $data['data']['initial_root_password'] = $initial_root_password;
+            } else {
+                $this->logger->error(
+                    'The root password can consist of 6-32 characters, letters [A-Za-z], digits [0-9], dash [ - ] and lower dash [ _ ], and the following special characters: ~ ! @ # $ * _ - + = ` \\ { } [ ] : ; \' , . ? /. You can use both lower- and uppercase letters.',
+                    __FILE__,
+                    __LINE__
+                );
+            }
+        }
+        if ( $initial_root_password_confirmation === $initial_root_password ) {
+            if ( !is_null($initial_root_password_confirmation) ) {
+                $data['data']['initial_root_password_confirmation'] = $initial_root_password_confirmation;
+            }
+        } else {
+            $this->logger->error(
+                'segregation: argument initial_root_password_confirmation does not coincide with initial_root_password',
+                __FILE__,
+                __LINE__
+            );
+        }
+        
+        return $this->sendPost( ONAPP_GETRESOURCE_DEFAULT, $data );
+    }
+
+    public function enableAcceleration($id){
+        if ( is_null($id) ) {
+            $this->logger->error(
+                'enableAcceleration: argument _id not set.',
+                __FILE__,
+                __LINE__
+            );
+        }
+        $this->_id = $id;
+
+        return $this->sendPut( ONAPP_ENABLE_ACCELERATION );
+    }
+
+    public function disableAcceleration($id){
+        if ( is_null($id) ) {
+            $this->logger->error(
+                'disableAcceleration: argument _id not set.',
+                __FILE__,
+                __LINE__
+            );
+        }
+        $this->_id = $id;
+
+        return $this->sendPut( ONAPP_DISABLE_ACCELERATION );
+    }
+
 }

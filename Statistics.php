@@ -79,7 +79,32 @@ class OnApp_Statistics extends OnApp {
                         ONAPP_FIELD_TYPE      => 'array',
                     ),
                 );
-
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                $this->fields['provider_cpu_usage'] = array(
+                    ONAPP_FIELD_MAP  => '_provider_cpu_usage',
+                    ONAPP_FIELD_TYPE => 'array',
+                );
+                $this->fields['provider_storage_usage'] = array(
+                    ONAPP_FIELD_MAP  => '_provider_storage_usage',
+                    ONAPP_FIELD_TYPE => 'array',
+                );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
                 break;
         }
 

@@ -36,6 +36,7 @@ define( 'ONAPP_ADD_EDIT_BACKUP_NOTE', 'add_edit_backup_note' );
  */
 define( 'ONAPP_RESTORE_BACKUP', 'restore_backup' );
 
+define('ONAPP_VERSION_SIX', 6);
 
 /**
  * StorageServer
@@ -206,6 +207,24 @@ class OnApp_StorageServer extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.2 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -231,7 +250,7 @@ class OnApp_StorageServer extends OnApp {
                  * ROUTE :
                  *
                  * @name note
-                 * @method PUT
+                 * @method POST
                  * @alias  /backups/:backup_id/restore(.:format)
                  * @format {:action=>"index", :controller=>"backups"}
                  */
@@ -339,8 +358,22 @@ class OnApp_StorageServer extends OnApp {
         return $this->sendGet( ONAPP_GET_INCREMENTAL_BACKUP_DETAIL );
     }
 
-    public function restoreBackUp() {
-        $this->sendPost( ONAPP_RESTORE_BACKUP );
+    /**
+     * restoreBackUp
+     *
+     * @param boolean $force_restore
+     *
+     * @return void
+     */
+    public function restoreBackUp($force_restore=false) {
+        if ( $this->getAPIVersion() >= ONAPP_VERSION_SIX ) {
+            $data = array('force_restore' => $force_restore);
+            $data = json_encode($data);
+            $this->setAPIResource($this->getResource(ONAPP_RESTORE_BACKUP));
+            $this->sendRequest( ONAPP_REQUEST_METHOD_POST, $data );
+        } else {
+            $this->sendPost( ONAPP_RESTORE_BACKUP );
+        }
     }
 
     public function saveNote() {

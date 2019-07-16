@@ -14,6 +14,20 @@
 
 /**
  *
+ */
+define( 'ONAPP_GETRESOURCE_NETWORKZONE_WITHNETWORKID', 'networkzone_withnetworkid' );
+
+/**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_NETWORKZONE_ATTACH', 'networkzone_attach' );
+/**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_NETWORKZONE_DETACH', 'networkzone_detach' );
+
+/**
+ *
  * Managing Network Zones
  *
  * The OnApp_NetworkZone class uses the following basic methods:
@@ -134,6 +148,36 @@ class OnApp_NetworkZone extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                $this->fields['server_type'] = array(
+                    ONAPP_FIELD_MAP  => '_server_type',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['network_id'] = array(
+                    ONAPP_FIELD_MAP  => '_network_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields                      = $this->initFields( 5.4 );
+                $this->fields['additional_fields'] = array(
+                    ONAPP_FIELD_MAP  => '_additional_fields',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -143,6 +187,49 @@ class OnApp_NetworkZone extends OnApp {
 
     function getResource( $action = ONAPP_GETRESOURCE_DEFAULT ) {
         switch ( $action ) {
+            case ONAPP_GETRESOURCE_NETWORKZONE_WITHNETWORKID:
+                /**
+                 * @alias     /settings/network_zones/:network_zone_id/networks/:id/attach.json
+                 */
+                if ( is_null( $this->_id ) && is_null( $this->_obj->_id ) ) {
+                    $this->logger->error(
+                        'getResource( ' . $action . ' ): argument _id not set.',
+                        __FILE__,
+                        __LINE__
+                    );
+                } else {
+                    if ( is_null( $this->_id ) ) {
+                        $this->_id = $this->_obj->_id;
+                    }
+                }
+                if ( is_null( $this->_network_id ) && is_null( $this->_obj->_network_id ) ) {
+                    $this->logger->error(
+                        'getResource( ' . $action . ' ): argument _network_id not set.',
+                        __FILE__,
+                        __LINE__
+                    );
+                } else {
+                    if ( is_null( $this->_network_id ) ) {
+                        $this->_network_id = $this->_obj->_network_id;
+                    }
+                }
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/networks/' . $this->_network_id;
+                break;
+
+            case ONAPP_GETRESOURCE_NETWORKZONE_ATTACH:
+                /**
+                 * @alias     /settings/network_zones/:network_zone_id/networks/:id/attach.json
+                 */
+                $resource = $this->getResource( ONAPP_GETRESOURCE_NETWORKZONE_WITHNETWORKID ) . '/attach';
+                break;
+
+            case ONAPP_GETRESOURCE_NETWORKZONE_DETACH:
+                /**
+                 * @alias     /settings/network_zones/:network_zone_id/networks/:id/attach.json
+                 */
+                $resource = $this->getResource( ONAPP_GETRESOURCE_NETWORKZONE_WITHNETWORKID ) . '/detach';
+                break;
+
             default:
                 /**
                  * ROUTE :
@@ -188,5 +275,18 @@ class OnApp_NetworkZone extends OnApp {
         }
 
         return $resource;
+    }
+
+    function attach( $network_id = null ) {
+        if ( ! is_null( $network_id ) ) {
+            $this->_network_id = $network_id;
+        }
+        $this->sendPost( ONAPP_GETRESOURCE_NETWORKZONE_ATTACH );
+    }
+    function detach( $network_id = null ) {
+        if ( ! is_null( $network_id ) ) {
+            $this->_network_id = $network_id;
+        }
+        $this->sendPost( ONAPP_GETRESOURCE_NETWORKZONE_DETACH );
     }
 }

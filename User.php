@@ -380,6 +380,52 @@ class OnApp_User extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.2 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields                   = $this->initFields( 5.1 );
+                $this->fields['built_from_ova'] = array(
+                    ONAPP_FIELD_MAP  => '_built_from_ova',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['vcenter_moref']  = array(
+                    ONAPP_FIELD_MAP  => '_vcenter_moref',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['bucket_id']                  = array(
+                    ONAPP_FIELD_MAP  => '_bucket_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                $this->fields['discount_due_to_free']       = array(
+                    ONAPP_FIELD_MAP  => '_discount_due_to_free',
+                    ONAPP_FIELD_TYPE => 'float',
+                );
+                $this->fields['monthly_price']              = array(
+                    ONAPP_FIELD_MAP  => '_monthly_price',
+                    ONAPP_FIELD_TYPE => 'float',
+                );
+                $this->fields['total_amount_with_discount']  = array(
+                    ONAPP_FIELD_MAP  => '_total_amount_with_discount',
+                    ONAPP_FIELD_TYPE => 'float',
+                );
+                $this->fields['billing_plan_id']            = array(
+                    ONAPP_FIELD_MAP  => '_billing_plan_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -640,7 +686,7 @@ class OnApp_User extends OnApp {
      *
      * @param boolean $force whether to delete completely
      */
-    public function delete( $force = false ) {
+    public function delete( $force = false, $take_ownership = false ) {
         if ( ! $this->_id ) {
             $this->logger->error(
                 'DeleteUser: argument _id not set.',
@@ -649,13 +695,19 @@ class OnApp_User extends OnApp {
             );
         }
 
-        if ( $force ) {
+        if ( $force || $take_ownership ) {
             $data = array(
                 'root' => 'tmp_holder',
-                'data' => array(
-                    'force' => '1'
-                )
+                'data' => array()
             );
+
+            if ($force) {
+                $data['data']['force'] = 1;
+            }
+
+            if ($take_ownership) {
+                $data['data']['take_ownership'] = true;
+            }
 
             $this->sendDelete( ONAPP_GETRESOURCE_DELETE_USER, $data );
         } else {
@@ -667,7 +719,7 @@ class OnApp_User extends OnApp {
         if ( ! empty( $this->_obj->_additional_fields ) ) {
             $tmp = new stdClass();
             foreach ( $this->_obj->_additional_fields as $field ) {
-                $tmp->{$field->additional_field->name} = $field->additional_field->value;
+                $tmp->{$field->name} = $field->value;
             }
             $this->_obj->_additional_fields = $tmp;
             unset( $tmp );
