@@ -37,6 +37,21 @@ define( 'ONAPP_GETRESOURCE_IP_ADDRESSES', 'ip_addresses' );
 define( 'ONAPP_GETRESOURCE_NETWORKS_LIST_BY_HYPERVISOR_GROUP_ID', 'networks_list_by_hypervisor_group_id' );
 
 /**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_IP_ASSIGN', 'ip_assign' );
+
+/**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_IP_UNASSIGN', 'ip_unassign' );
+
+/**
+ *
+ */
+define( 'ONAPP_MANAGE_FAILOVER', 'manage_failover' );
+
+/**
  * Configuring Network
  *
  * This class represents the Networks added to your system.
@@ -213,6 +228,41 @@ class OnApp_Network extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                $this->fields['id'][ONAPP_FIELD_REQUIRED] = false;
+                $this->fields['created_at'][ONAPP_FIELD_REQUIRED] = false;
+                $this->fields['updated_at'][ONAPP_FIELD_REQUIRED] = false;
+                $this->fields['identifier'][ONAPP_FIELD_REQUIRED] = false;
+
+                $this->fields['type'] = array(
+                    ONAPP_FIELD_MAP  => '_type',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                $this->fields['openstack_id'] = array(
+                    ONAPP_FIELD_MAP  => '_openstack_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['vcenter_identifier'] = array(
+                    ONAPP_FIELD_MAP  => '_vcenter_identifier',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -244,6 +294,30 @@ class OnApp_Network extends OnApp {
                  * @format {:controller=>"ip_addresses", :action=>"index"}
                  */
                 $resource = $this->_resource . '/' . $this->_id . '/ip_address';
+                break;
+
+            case ONAPP_GETRESOURCE_IP_ASSIGN:
+                /*
+                 * @method POST
+                 * @alias  /settings/networks/:network_id/ip_addresses/assign(.:format)
+                 */
+                $resource = $this->_resource . '/' . $this->_id . '/ip_addresses/assign';
+                break;
+
+            case ONAPP_GETRESOURCE_IP_UNASSIGN:
+                /*
+                 * @method POST
+                 * @alias  /settings/networks/:network_id/ip_addresses/assign(.:format)
+                 */
+                $resource = $this->_resource . '/' . $this->_id . '/ip_addresses/unassign';
+                break;
+
+            case ONAPP_MANAGE_FAILOVER:
+                /*
+                 * @method PATCH
+                 * @alias  /settings/hypervisor_zones/:id/manage_failover(.:format)
+                 */
+                $resource = 'settings/hypervisor_zones/' . $this->_hypervisor_group_id . '/' . ONAPP_MANAGE_FAILOVER;
                 break;
 
             default:
@@ -304,12 +378,102 @@ class OnApp_Network extends OnApp {
         return ( is_array( $result ) || ! $result ) ? $result : array( $result );
     }
 
-    function activateCheck( $action_name ) {
-        switch ( $action_name ) {
-            case ONAPP_ACTIVATE_SAVE:
-            case ONAPP_ACTIVATE_DELETE:
-                exit( 'Call to undefined method ' . __CLASS__ . '::' . $action_name . '()' );
-                break;
+    function assignIPAddressToUser( $ipAddresses, $userID ) {
+        if ( is_null( $this->_id ) ) {
+            $this->logger->error(
+                'cloudConfig: argument _id not set.',
+                __FILE__,
+                __LINE__
+            );
         }
+        $ipAddressesRes = [];
+        if ( is_array( $ipAddresses ) ) {
+            foreach ( $ipAddresses as $ip ) {
+                $ipAddressesRes[] = $ip;
+            }
+        } else {
+            $ipAddressesRes[] = $ipAddresses;
+        }
+
+        $data = array(
+            'root' => (parent::getAPIVersion() <= 5.5) ? 'tmp_holder' : 'assign',
+            'data' => array(
+                'ip_address' => $ipAddressesRes,
+                'user_id'      => $userID,
+            ),
+        );
+
+        $res = $this->sendPost( ONAPP_GETRESOURCE_IP_ASSIGN, $data );
+
+        return $res;
+    }
+
+    function unassignIPAddress( $ipAddressIDs ) {
+        if ( is_null( $this->_id ) ) {
+            $this->logger->error(
+                'cloudConfig: argument _id not set.',
+                __FILE__,
+                __LINE__
+            );
+        }
+        $ipAddresses = [];
+        if ( is_array( $ipAddressIDs ) ) {
+            foreach ( $ipAddressIDs as $ip ) {
+                $ipAddresses[] = $ip;
+            }
+        } else {
+            $ipAddresses[] = $ipAddressIDs;
+        }
+
+        $data = array(
+            'root' => (parent::getAPIVersion() <= 5.5) ? 'tmp_holder' : 'unassign',
+            'data' => array(
+                'ip_address' => $ipAddresses,
+            ),
+        );
+
+        $res = $this->sendPost( ONAPP_GETRESOURCE_IP_UNASSIGN, $data );
+
+        return $res;
+    }
+
+    function activateCheck( $action_name ) {
+        if($this->version < 5.3){
+            switch ( $action_name ) {
+                case ONAPP_ACTIVATE_SAVE:
+                case ONAPP_ACTIVATE_DELETE:
+                    exit( 'Call to undefined method ' . __CLASS__ . '::' . $action_name . '()' );
+                    break;
+            }
+        }
+    }
+
+    public function manageFailover ( $hypervisor_group_id, $failover_status ) {
+        if ( is_null( $hypervisor_group_id ) ) {
+            $this->logger->error(
+                'cloudConfig: argument hypervisor_group_id not set.',
+                __FILE__,
+                __LINE__
+            );
+        }
+        if ( is_null( $failover_status ) ) {
+            $this->logger->error(
+                'cloudConfig: argument failover_status not set.',
+                __FILE__,
+                __LINE__
+            );
+        }
+
+        $this->_hypervisor_group_id = $hypervisor_group_id;
+
+        $data = array(
+            'root' => 'hypervisor_group',
+            'data' => array(
+                'failover_status' => $failover_status,
+            ),
+        );
+        $res = $this->sendPatch( ONAPP_MANAGE_FAILOVER, $data );
+
+        return $res;
     }
 }

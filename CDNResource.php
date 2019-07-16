@@ -313,6 +313,32 @@ class OnApp_CDNResource extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.1 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['letsencrypt_ssl_on']     = array(
+                    ONAPP_FIELD_MAP  => '_letsencrypt_ssl_on',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['cdn_ssl_certificate_id'] = array(
+                    ONAPP_FIELD_MAP  => '_cdn_ssl_certificate_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -463,7 +489,7 @@ class OnApp_CDNResource extends OnApp {
     }
 
     public function save() {
-        if ( count( $this->_countries ) == 0 ) {
+        if ( !is_countable($this->_countries) || count( $this->_countries ) == 0 ) {
             unset( $this->fields['countries'] );
         }
 

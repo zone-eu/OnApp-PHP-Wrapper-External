@@ -159,6 +159,32 @@ class OnApp_VDCS extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                $this->fields['network_pool_identifier'] = array(
+                    ONAPP_FIELD_MAP  => '_network_pool_identifier',
+                    ONAPP_FIELD_TYPE => 'string'
+                );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['organization_id'] = array(
+                    ONAPP_FIELD_MAP  => '_organization_id',
+                    ONAPP_FIELD_TYPE => 'integer'
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );

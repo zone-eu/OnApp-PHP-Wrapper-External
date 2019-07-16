@@ -140,6 +140,24 @@ class OnApp_BillingUser_ResourceBackupServerGroup extends OnApp_BillingUser_Base
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         $this->fields['id'][ ONAPP_FIELD_REQUIRED ] = false;
@@ -163,7 +181,7 @@ class OnApp_BillingUser_ResourceBackupServerGroup extends OnApp_BillingUser_Base
             $dataArray['price_backup'] = $price_backup;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
         $data = array(
@@ -185,7 +203,7 @@ class OnApp_BillingUser_ResourceBackupServerGroup extends OnApp_BillingUser_Base
             $dataArray['price_backup_disk_size'] = $price_backup_disk_size;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
         $data = array(
@@ -207,7 +225,7 @@ class OnApp_BillingUser_ResourceBackupServerGroup extends OnApp_BillingUser_Base
             $dataArray['price_template'] = $price_template;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
         $data = array(
@@ -229,7 +247,7 @@ class OnApp_BillingUser_ResourceBackupServerGroup extends OnApp_BillingUser_Base
             $dataArray['price_template_disk_size'] = $price_template_disk_size;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
         $data = array(

@@ -100,6 +100,48 @@ class OnApp_License extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.2 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['kvm_xen_hv_limit'] = array(
+                    ONAPP_FIELD_MAP   => '_kvm_xen_hv_limit',
+                    ONAPP_FIELD_TYPE  => 'string',
+                );
+                $this->fields['kvm_xen_vm_limit']         = array(
+                    ONAPP_FIELD_MAP   => '_kvm_xen_vm_limit',
+                    ONAPP_FIELD_TYPE  => 'string',
+                );
+                $this->fields['vcenter_vm_limit']         = array(
+                    ONAPP_FIELD_MAP   => '_vcenter_vm_limit',
+                    ONAPP_FIELD_TYPE  => 'string',
+                );
+                $this->fields['kvm_xen_core_limit']       = array(
+                    ONAPP_FIELD_MAP   => '_kvm_xen_core_limit',
+                    ONAPP_FIELD_TYPE  => 'string',
+                );
+                $this->fields['vcenter_core_limit']       = array(
+                    ONAPP_FIELD_MAP   => '_vcenter_core_limit',
+                    ONAPP_FIELD_TYPE  => 'string',
+                );
+                $this->fields['integrated_storage_limit'] = array(
+                    ONAPP_FIELD_MAP   => '_integrated_storage_limit',
+                    ONAPP_FIELD_TYPE  => 'string',
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );

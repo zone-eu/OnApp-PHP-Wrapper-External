@@ -16,6 +16,8 @@
  * @see         OnApp
  */
 
+define('ONAPP_VERSION_SIX', 6);
+
 /**
  * User Payments
  *
@@ -84,7 +86,6 @@ class OnApp_Payment extends OnApp {
                     'user_id'        => array(
                         ONAPP_FIELD_MAP       => '_user_id',
                         ONAPP_FIELD_TYPE      => 'integer',
-                        ONAPP_FIELD_REQUIRED  => true,
                         ONAPP_FIELD_READ_ONLY => true
                     ),
                 );
@@ -114,6 +115,28 @@ class OnApp_Payment extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['payer_type']     = array(
+                    ONAPP_FIELD_MAP  => '_payer_type',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -127,33 +150,37 @@ class OnApp_Payment extends OnApp {
                 /**
                  * ROUTE :
                  *
-                 * @name    /users/:user_id/payments(.:format)
-                 * @method GET
-                 * @alias   /virtual_machines(.:format)
+                 * @name    payment
+                 * @method  GET
+                 * @alias   (v < 6) /users/:user_id/payments(.:format)
+                 * @alias   (v >= 6) /billing/payments(.:format)?payer_type=:payer_type
                  * @format  {:controller=>"payments", :action=>"index"}
                  */
                 /**
                  * ROUTE :
                  *
-                 * @name user_payment
-                 * @method GET
-                 * @alias    /users/:user_id/payments/:id(.:format)
-                 * @format   {:controller=>"payments", :action=>"show"}
+                 * @name    payment
+                 * @method  GET
+                 * @alias   (v < 6) /users/:user_id/payments/:id(.:format)
+                 * @alias   (v >= 6) /billing/payments/:id(.:format)
+                 * @format  {:controller=>"payments", :action=>"show"}
                  */
                 /**
                  * ROUTE :
                  *
                  * @name
-                 * @method POST
-                 * @alias   /users/:user_id/payments(.:format)
+                 * @method  POST
+                 * @alias   (v < 6) /users/:user_id/payments(.:format)
+                 * @alias   (v >= 6) /billing/payments(.:format)
                  * @format  {:controller=>"payments", :action=>"create"}
                  */
                 /**
                  * ROUTE :
                  *
                  * @name
-                 * @method PUT
-                 * @alias   /users/:user_id/payments/:id(.:format)
+                 * @method  PUT
+                 * @alias   (v < 6) /users/:user_id/payments/:id(.:format)
+                 * @alias   (v >= 6) /billing/payments/:id(.:format)
                  * @format  {:controller=>"payments", :action=>"update"}
                  */
                 /**
@@ -161,10 +188,15 @@ class OnApp_Payment extends OnApp {
                  *
                  * @name
                  * @method DELETE
-                 * @alias   /users/:user_id/payments/:id(.:format)
+                 * @alias (v < 6) /users/:user_id/payments/:id(.:format)
+                 * @alias (v >= 6) /billing/payments/:id(.:format)
                  * @format  {:controller=>"payments", :action=>"destroy"}
                  */
-                $resource = 'users/' . $this->_user_id . '/' . $this->_resource;
+                if ( $this->getAPIVersion() < ONAPP_VERSION_SIX ) {
+                    $resource = 'users/' . $this->_user_id . '/' . $this->_resource;
+                } else {
+                    $resource = 'billing/user/' . $this->_resource;
+                }
                 $this->logger->debug( 'getResource( ' . $action . ' ): return ' . $resource );
                 break;
 
@@ -186,21 +218,47 @@ class OnApp_Payment extends OnApp {
      * @access public
      */
     function getList( $user_id = null, $url_args = null ) {
-        if ( is_null( $user_id ) && ! is_null( $this->_user_id ) ) {
+        if (null === $user_id && null !== $this->_user_id) {
             $user_id = $this->_user_id;
         }
 
-        if ( ! is_null( $user_id ) ) {
+        if ($this->getAPIVersion() < ONAPP_VERSION_SIX) {
+            if (null === $user_id) {
+                $this->logger->error(
+                    'getList: argument _user_id not set.',
+                    __FILE__,
+                    __LINE__
+                );
+
+                return false;
+            }
+
             $this->_user_id = $user_id;
 
             return parent::getList();
-        } else {
+        }
+
+        if (null === $url_args) {
+            $url_args = array();
+        }
+
+        if (null !== $this->_payer_type && !array_key_exists('payer_type', $url_args)) {
+            $url_args['payer_type'] = $this->_payer_type;
+        }
+
+        if (null !== $user_id) {
+            $url_args['payer_id'] = $user_id;
+        }
+
+        if (!array_key_exists('payer_type', $url_args)) {
             $this->logger->error(
-                'getList: argument _user_id not set.',
+                'getList: argument _payer_type not set.',
                 __FILE__,
                 __LINE__
             );
         }
+
+        return parent::getList(null, $url_args);
     }
 
     /**
@@ -217,50 +275,55 @@ class OnApp_Payment extends OnApp {
      * @access public
      */
     function load( $id = null, $user_id = null ) {
-        if ( is_null( $user_id ) && ! is_null( $this->_user_id ) ) {
-            $user_id = $this->_user_id;
-        }
-
-        if ( is_null( $id ) && ! is_null( $this->_id ) ) {
-            $id = $this->_id;
-        }
-
-        if ( is_null( $id ) &&
-             isset( $this->_obj ) &&
-             ! is_null( $this->_obj->_id )
-        ) {
-            $id = $this->_obj->_id;
-        }
-
-        $this->logger->add( 'load: Load class ( id => ' . $id . ' ).' );
-
-        if ( ! is_null( $id ) && ! is_null( $user_id ) ) {
-            $this->_id      = $id;
-            $this->_user_id = $user_id;
-
-            $this->setAPIResource( $this->getResource( ONAPP_GETRESOURCE_LOAD ) );
-
-            $response = $this->sendRequest( ONAPP_REQUEST_METHOD_GET );
-
-            $result = $this->_castResponseToClass( $response );
-
-            $this->_obj = $result;
-
-            return $result;
-        } else {
-            if ( is_null( $id ) ) {
-                $this->logger->error(
-                    'load: argument _id not set.',
-                    __FILE__,
-                    __LINE__
-                );
-            } else {
-                $this->logger->error(
-                    'load: argument _user_id not set.',
-                    __FILE__,
-                    __LINE__
-                );
+        if ( $this->getAPIVersion() < ONAPP_VERSION_SIX ) {
+            if ( is_null( $user_id ) && ! is_null( $this->_user_id ) ) {
+                $user_id = $this->_user_id;
             }
+
+            if ( is_null( $id ) && ! is_null( $this->_id ) ) {
+                $id = $this->_id;
+            }
+
+            if ( is_null( $id ) &&
+                 isset( $this->_obj ) &&
+                 ! is_null( $this->_obj->_id )
+            ) {
+                $id = $this->_obj->_id;
+            }
+
+            $this->logger->add( 'load: Load class ( id => ' . $id . ' ).' );
+
+            if ( ! is_null( $id ) && ! is_null( $user_id ) ) {
+                $this->_id      = $id;
+                $this->_user_id = $user_id;
+
+                $this->setAPIResource( $this->getResource( ONAPP_GETRESOURCE_LOAD ) );
+
+                $response = $this->sendRequest( ONAPP_REQUEST_METHOD_GET );
+
+                $result = $this->_castResponseToClass( $response );
+
+                $this->_obj = $result;
+
+                return $result;
+            } else {
+                if ( is_null( $id ) ) {
+                    $this->logger->error(
+                        'load: argument _id not set.',
+                        __FILE__,
+                        __LINE__
+                    );
+                } else {
+                    $this->logger->error(
+                        'load: argument _user_id not set.',
+                        __FILE__,
+                        __LINE__
+                    );
+                }
+            }
+        } else {
+            
+            return parent::load();
         }
     }
 }

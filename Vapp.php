@@ -47,6 +47,31 @@ define( 'ONAPP_GETRESOURCE_VAPPS_START', 'start' );
 define( 'ONAPP_GETRESOURCE_VAPPS_STOP', 'stop' );
 
 /**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_VAPPS_CHANGE_OWNER', 'change_owner' );
+
+/**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_VAPPS_SUSPEND', 'suspend' );
+
+/**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_VAPPS_UNSUSPEND', 'unsuspend' );
+
+/**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_VAPPS_REBOOT', 'reboot' );
+
+/**
+ *
+ */
+define( 'ONAPP_GETRESOURCE_VAPPS_SHUTDOWN', 'shutdown' );
+
+/**
  * Vapps
  *
  */
@@ -139,6 +164,32 @@ class OnApp_Vapp extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['deployed']       = array(
+                    ONAPP_FIELD_MAP  => '_deployed',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['description']    = array(
+                    ONAPP_FIELD_MAP  => '_description',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -174,6 +225,10 @@ class OnApp_Vapp extends OnApp {
 
             case ONAPP_GETRESOURCE_VAPPS_RECOMPOSING:
                 $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/recompose';
+                break;
+
+            case ONAPP_GETRESOURCE_VAPPS_CHANGE_OWNER:
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LOAD ) . '/owner';
                 break;
 
             case ONAPP_GETRESOURCE_VAPPS_DELETE:
@@ -254,11 +309,46 @@ class OnApp_Vapp extends OnApp {
         return $resource;
     }
 
-    function compose( $data ) {
+    function compose( $data, $virtualMachines ) {
+        /*
+                "virtual_machines" => array(
+                    "virtual_machine_0" => array(
+                        "id"                                    => "vm-a111111-8885-4276-ac1c-479c724b9d6e",
+                        "name"                                  => "Example",
+                        "cpus"                                  => 1,
+                        "cores_per_socket"                      => 1,
+                        "memory"                                => 1024,
+                        "storage_policy"                        => 2,
+                        "hard_disks"                            => array(
+                            "hard_disk_1" => array(
+                                "disk_space" => 3,
+                            ),
+                        ),
+                        "vcloud_guest_customization"            => array(
+                            "enabled"                => "1",
+                            "admin_password_enabled" => "1",
+                            "admin_password_auto"    => "0",
+                            "admin_password"         => "password",
+                            "computer_name"          => "example",
+                        ),
+                        "recipe_ids"                            => [ 4, 5 ],
+                        "custom_recipe_variables"               => array(
+                            "variable_0" => array(
+                                "name"    => "xxx",
+                                "value"   => "xy",
+                                "enabled" => "true",
+                            )
+                        ),
+                        "boot_vm"                               => "1",
+                        "disable_guest_customization_after_run" => "0",
+                    )
+                )
+        */
         $data = array(
             'root' => 'tmp_holder',
             'data' => [
-                'vapp' => $data
+                'vapp'             => $data,
+                "virtual_machines" => $virtualMachines,
             ]
         );
         $this->sendPost( ONAPP_GETRESOURCE_VAPPS_COMPOSE, $data );
@@ -286,7 +376,8 @@ class OnApp_Vapp extends OnApp {
             'root' => 'tmp_holder',
             'data' => array(
                 'vapp' => array(
-                    'vapp_template_id' => $id
+                    'vapp_template_id' => $id,
+                    ''
                 )
             )
         );
@@ -374,4 +465,60 @@ class OnApp_Vapp extends OnApp {
 
         $this->sendPost( ONAPP_GETRESOURCE_DEFAULT, $data );
     }
+
+    /**
+     * Change vApp Owner
+     *
+     * @param $new_owner_id
+     *
+     * @access    public
+     */
+    function changeOwner( $new_owner_id ) {
+        $data = array(
+            'root' => 'tmp_holder',
+            'data' => array(
+                'owner_change' => array(
+                    'new_owner_id' => $new_owner_id
+                )
+            )
+        );
+        $this->sendPut( ONAPP_GETRESOURCE_VAPPS_CHANGE_OWNER, $data );
+    }
+
+    /**
+     * Suspend vApp
+     *
+     * @access    public
+     */
+    function suspend() {
+        $this->sendPost( ONAPP_GETRESOURCE_VAPPS_SUSPEND );
+    }
+
+    /**
+     * Unsuspend vApp
+     *
+     * @access    public
+     */
+    function unsuspend() {
+        $this->sendPost( ONAPP_GETRESOURCE_VAPPS_UNSUSPEND );
+    }
+
+    /**
+     * Reboot vApp
+     *
+     * @access    public
+     */
+    function reboot() {
+        $this->sendPost( ONAPP_GETRESOURCE_VAPPS_REBOOT );
+    }
+
+    /**
+     * Shutdown vApp
+     *
+     * @access    public
+     */
+    function shutdown() {
+        $this->sendPost( ONAPP_GETRESOURCE_VAPPS_SHUTDOWN );
+    }
+
 }
