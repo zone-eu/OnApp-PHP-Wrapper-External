@@ -37,11 +37,6 @@ class OnApp_HypervisorZone_NetworkJoin extends OnApp {
      */
     var $_resource = 'network_joins';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
@@ -50,7 +45,7 @@ class OnApp_HypervisorZone_NetworkJoin extends OnApp {
      * @return array
      */
     function initFields( $version = null, $className = '' ) {
-        switch( $version ) {
+        switch ( $version ) {
             case '2.0':
                 $this->fields = array(
                     'id'            => array(
@@ -86,13 +81,13 @@ class OnApp_HypervisorZone_NetworkJoin extends OnApp {
                 break;
 
             case '2.1':
-                $this->fields = $this->initFields( '2.0' );
-                $this->fields[ 'target_join_id' ] = array(
+                $this->fields                     = $this->initFields( '2.0' );
+                $this->fields['target_join_id']   = array(
                     ONAPP_FIELD_MAP      => '_target_join_id',
                     ONAPP_FIELD_TYPE     => 'integer',
                     ONAPP_FIELD_REQUIRED => true
                 );
-                $this->fields[ 'target_join_type' ] = array(
+                $this->fields['target_join_type'] = array(
                     ONAPP_FIELD_MAP  => '_target_join_type',
                     ONAPP_FIELD_TYPE => 'string',
                     //ONAPP_FIELD_REQUIRED => true
@@ -107,7 +102,39 @@ class OnApp_HypervisorZone_NetworkJoin extends OnApp {
             case 3.0:
             case 3.1:
             case 3.2:
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+            case 4.2:
                 $this->fields = $this->initFields( 2.3 );
+                break;
+            case 4.3:
+                $this->fields = $this->initFields( 4.2 );
+                break;
+            case 5.0:
+                $this->fields = $this->initFields( 4.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields                                             = $this->initFields( 5.3 );
+                $this->fields['target_join_id'][ ONAPP_FIELD_REQUIRED ]   = false;
+                $this->fields['target_join_type'][ ONAPP_FIELD_REQUIRED ] = false;
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
                 break;
         }
 
@@ -125,7 +152,7 @@ class OnApp_HypervisorZone_NetworkJoin extends OnApp {
      * @access public
      */
     function getResource( $action = ONAPP_GETRESOURCE_DEFAULT ) {
-        switch( $action ) {
+        switch ( $action ) {
             case ONAPP_GETRESOURCE_DEFAULT:
                 /**
                  * ROUTE :
@@ -151,7 +178,20 @@ class OnApp_HypervisorZone_NetworkJoin extends OnApp {
                  * @alias   /settings/hypervisor_zones/:hypervisor_group_id/network_joins/:id(.:format)
                  * @format  {:controller=>"network_joins", :action=>"destroy"}
                  */
-                $resource = 'settings/hypervisor_zones/' . $this->_target_join_id . '/' . $this->_resource;
+
+                if ( is_null( $this->_network_id  ) && is_null( $this->_obj->_network_id  ) ) {
+                    $this->logger->error(
+                        'getResource( ' . $action . ' ): argument _network_id  not set.',
+                        __FILE__,
+                        __LINE__
+                    );
+                } else {
+                    if ( is_null( $this->_network_id  ) ) {
+                        $this->_network_id  = $this->_obj->_network_id ;
+                    }
+                }
+
+                $resource = 'settings/hypervisor_zones/' . $this->_network_id . '/' . $this->_resource;
                 $this->logger->debug( 'getResource( ' . $action . ' ): return ' . $resource );
                 break;
 
@@ -161,31 +201,5 @@ class OnApp_HypervisorZone_NetworkJoin extends OnApp {
         }
 
         return $resource;
-    }
-
-    /**
-     * Gets list of network joins to particular hypervisor zone
-     *
-     * @param integet hypervisor zone id
-     *
-     * @return array of newtwork join objects
-     */
-    function getList( $target_join_id = null, $url_args = null ) {
-        if( is_null( $target_join_id ) && ! is_null( $this->_target_join_id ) ) {
-            $target_join_id = $this->_target_join_id;
-        }
-
-        if( ! is_null( $target_join_id ) ) {
-            $this->_target_join_id = $target_join_id;
-
-            return parent::getList();
-        }
-        else {
-            $this->logger->error(
-                'getList: argument _target_join_id not set.',
-                __FILE__,
-                __LINE__
-            );
-        }
     }
 }

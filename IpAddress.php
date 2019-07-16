@@ -7,7 +7,7 @@
  * @category    API wrapper
  * @package     OnApp
  * @author      Vitaliy Kondratyuk
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -27,7 +27,6 @@ class OnApp_IpAddress extends OnApp {
      * @var string
      */
     var $_tagRoot = 'ip_address';
-
     /**
      * alias processing the object data
      *
@@ -35,84 +34,79 @@ class OnApp_IpAddress extends OnApp {
      */
     var $_resource = 'ip_addresses';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
-     * @param string|float $version   OnApp API version
-     * @param string       $className current class' name
+     * @param string|float $version OnApp API version
+     * @param string $className current class' name
      *
      * @return array
      */
     public function initFields( $version = null, $className = '' ) {
 
-        switch( $version ) {
+        switch ( $version ) {
             case '2.0':
             case '2.1':
-			case 2.2:
+            case 2.2:
                 $this->fields = array(
-                    'id' => array(
-                        ONAPP_FIELD_MAP => '_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'id'                 => array(
+                        ONAPP_FIELD_MAP       => '_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'created_at' => array(
-                        ONAPP_FIELD_MAP => '_created_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                    'created_at'         => array(
+                        ONAPP_FIELD_MAP       => '_created_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'updated_at' => array(
-                        ONAPP_FIELD_MAP => '_updated_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                    'updated_at'         => array(
+                        ONAPP_FIELD_MAP       => '_updated_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'address' => array(
-                        ONAPP_FIELD_MAP => '_address',
+                    'address'            => array(
+                        ONAPP_FIELD_MAP      => '_address',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'netmask' => array(
-                        ONAPP_FIELD_MAP => '_netmask',
+                    'netmask'            => array(
+                        ONAPP_FIELD_MAP      => '_netmask',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'broadcast' => array(
-                        ONAPP_FIELD_MAP => '_broadcast',
+                    'broadcast'          => array(
+                        ONAPP_FIELD_MAP      => '_broadcast',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'network_address' => array(
-                        ONAPP_FIELD_MAP => '_network_address',
+                    'network_address'    => array(
+                        ONAPP_FIELD_MAP      => '_network_address',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'gateway' => array(
-                        ONAPP_FIELD_MAP => '_gateway',
+                    'gateway'            => array(
+                        ONAPP_FIELD_MAP      => '_gateway',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'network_id' => array(
-                        ONAPP_FIELD_MAP => '_network_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'network_id'         => array(
+                        ONAPP_FIELD_MAP       => '_network_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'free' => array(
-                        ONAPP_FIELD_MAP => '_free',
-                        ONAPP_FIELD_TYPE => 'boolean',
+                    'free'               => array(
+                        ONAPP_FIELD_MAP       => '_free',
+                        ONAPP_FIELD_TYPE      => 'boolean',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
                     'disallowed_primary' => array(
-                        ONAPP_FIELD_MAP => '_disallowed_primary',
-                        ONAPP_FIELD_TYPE => 'boolean',
+                        ONAPP_FIELD_MAP       => '_disallowed_primary',
+                        ONAPP_FIELD_TYPE      => 'boolean',
                         ONAPP_FIELD_READ_ONLY => true,
                     )
                 );
                 break;
 
             case 2.3:
-                $this->fields              = $this->initFields( 2.2 );
-                $this->fields[ 'user_id' ] = array(
-                    ONAPP_FIELD_MAP => 'user_id',
-                    ONAPP_FIELD_TYPE => 'integer',
+                $this->fields            = $this->initFields( 2.2 );
+                $this->fields['user_id'] = array(
+                    ONAPP_FIELD_MAP       => '_user_id',
+                    ONAPP_FIELD_TYPE      => 'integer',
                     ONAPP_FIELD_READ_ONLY => true,
                 );
                 break;
@@ -120,11 +114,70 @@ class OnApp_IpAddress extends OnApp {
             case 3.0:
             case 3.1:
             case 3.2:
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+            case 4.2:
                 $this->fields = $this->initFields( 2.3 );
+
+                $this->fields['customer_network_id'] = array(
+                    ONAPP_FIELD_MAP  => '_customer_network_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['hypervisor_id']       = array(
+                    ONAPP_FIELD_MAP  => '_hypervisor_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['ip_address_pool_id']  = array(
+                    ONAPP_FIELD_MAP  => '_ip_address_pool_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['pxe']                 = array(
+                    ONAPP_FIELD_MAP  => '_pxe',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+
+                break;
+            case 4.3:
+            case 5.0:
+                $this->fields = $this->initFields( 4.2 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                $this->fields['ip_range_id'] = array(
+                    ONAPP_FIELD_MAP  => '_ip_range_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['ipv4'] = array(
+                    ONAPP_FIELD_MAP  => '_ipv4',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['prefix'] = array(
+                    ONAPP_FIELD_MAP  => '_prefix',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
                 break;
         }
 
         parent::initFields( $version, __CLASS__ );
+
         return $this->fields;
     }
 
@@ -137,10 +190,11 @@ class OnApp_IpAddress extends OnApp {
      * @access public
      */
     function getResource( $action = ONAPP_GETRESOURCE_DEFAULT ) {
-        switch( $action ) {
+        switch ( $action ) {
             case ONAPP_GETRESOURCE_DEFAULT:
                 /**
                  * ROUTE :
+                 *
                  * @name network_ip_addresses
                  * @method GET
                  * @alias  /settings/networks/:network_id/ip_addresses(.:format)
@@ -148,6 +202,7 @@ class OnApp_IpAddress extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name network_ip_address
                  * @method GET
                  * @alias  /settings/networks/:network_id/ip_addresses/:id(.:format)
@@ -155,6 +210,7 @@ class OnApp_IpAddress extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name
                  * @method POST
                  * @alias  /settings/networks/:network_id/ip_addresses(.:format)
@@ -162,6 +218,7 @@ class OnApp_IpAddress extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name
                  * @method PUT
                  * @alias  /settings/networks/:network_id/ip_addresses/:id(.:format)
@@ -169,20 +226,20 @@ class OnApp_IpAddress extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name
                  * @method DELETE
                  * @alias  /settings/networks/:network_id/ip_addresses/:id(.:format)
                  * @format {:controller=>"ip_addresses", :action=>"destroy"}
                  */
-                if( is_null( $this->_network_id ) && is_null( $this->_obj->_network_id ) ) {
+                if ( is_null( $this->_network_id ) && is_null( $this->_obj->_network_id ) ) {
                     $this->logger->error(
                         "getResource($action): argument _network_id not set.",
                         __FILE__,
                         __LINE__
                     );
-                }
-                else {
-                    if( is_null( $this->_network_id ) ) {
+                } else {
+                    if ( is_null( $this->_network_id ) ) {
                         $this->_network_id = $this->_obj->_network_id;
                     }
                 }
@@ -209,16 +266,15 @@ class OnApp_IpAddress extends OnApp {
      * @access public
      */
     function getList( $network_id = null, $url_args = null ) {
-        if( is_null( $network_id ) && ! is_null( $this->_network_id ) ) {
+        if ( is_null( $network_id ) && ! is_null( $this->_network_id ) ) {
             $network_id = $this->_network_id;
         }
 
-        if( ! is_null( $network_id ) ) {
+        if ( ! is_null( $network_id ) ) {
             $this->_network_id = $network_id;
 
             return parent::getList();
-        }
-        else {
+        } else {
             $this->logger->error(
                 'getList: argument _network_id not set.',
                 __FILE__,
@@ -234,31 +290,31 @@ class OnApp_IpAddress extends OnApp {
      * The key field Parameter ID is used to load the Object. You can re-set
      * this parameter in the class inheriting OnApp class.
      *
-     * @param integer $id                 IP Address Join id
+     * @param integer $id IP Address Join id
      * @param integer $virtual_machine_id Virtual Machine id
      *
      * @return mixed serialized Object instance from API
      * @access public
      */
     function load( $id = null, $network_id = null ) {
-        if( is_null( $network_id ) && ! is_null( $this->_network_id ) ) {
+        if ( is_null( $network_id ) && ! is_null( $this->_network_id ) ) {
             $network_id = $this->_network_id;
         }
 
-        if( is_null( $id ) && ! is_null( $this->_id ) ) {
+        if ( is_null( $id ) && ! is_null( $this->_id ) ) {
             $id = $this->_id;
         }
 
-        if( is_null( $id ) &&
-            isset( $this->_obj ) &&
-            ! is_null( $this->_obj->_id )
+        if ( is_null( $id ) &&
+             isset( $this->_obj ) &&
+             ! is_null( $this->_obj->_id )
         ) {
             $id = $this->_obj->_id;
         }
 
         $this->logger->add( "load: Load class ( id => '$id')." );
 
-        if( ! is_null( $id ) && ! is_null( $network_id ) ) {
+        if ( ! is_null( $id ) && ! is_null( $network_id ) ) {
             $this->_id         = $id;
             $this->_network_id = $network_id;
 
@@ -271,16 +327,14 @@ class OnApp_IpAddress extends OnApp {
             $this->_obj = $result;
 
             return $result;
-        }
-        else {
-            if( is_null( $id ) ) {
+        } else {
+            if ( is_null( $id ) ) {
                 $this->logger->error(
                     'load: argument _id not set.',
                     __FILE__,
                     __LINE__
                 );
-            }
-            else {
+            } else {
                 $this->logger->error(
                     'load: argument _network_id not set.',
                     __FILE__,
@@ -301,10 +355,10 @@ class OnApp_IpAddress extends OnApp {
      * @access public
      */
     function save() {
-        if( isset( $this->_id ) ) {
+        if ( isset( $this->_id ) ) {
             $obj = $this->_edit();
 
-            if( isset( $obj ) && ! isset( $obj->errors ) ) {
+            if ( isset( $obj ) && ! isset( $obj->errors ) ) {
                 $this->load();
             }
         }

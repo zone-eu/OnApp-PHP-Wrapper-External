@@ -6,7 +6,7 @@
  * @category    API wrapper
  * @package     OnApp
  * @author      Andrew Yatskovets
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -30,7 +30,6 @@ class OnApp_SoftwareLincense extends OnApp {
      * @var string
      */
     var $_tagRoot = 'software_license';
-
     /**
      * alias processing the object data
      *
@@ -38,86 +37,108 @@ class OnApp_SoftwareLincense extends OnApp {
      */
     var $_resource = 'software_licenses';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
-     * @param string|float $version   OnApp API version
-     * @param string       $className current class' name
+     * @param string|float $version OnApp API version
+     * @param string $className current class' name
      *
      * @return array
      */
     public function initFields( $version = null, $className = '' ) {
-        switch( $version ) {
+        switch ( $version ) {
             case '2.1':
-			case 2.2:
-			case 2.3:
+            case 2.2:
+            case 2.3:
                 $this->fields = array(
-                    'id' => array(
-                        ONAPP_FIELD_MAP => '_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'id'         => array(
+                        ONAPP_FIELD_MAP       => '_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true
                     ),
                     'created_at' => array(
-                        ONAPP_FIELD_MAP => '_created_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                        ONAPP_FIELD_MAP       => '_created_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
                     'updated_at' => array(
-                        ONAPP_FIELD_MAP => '_updated_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                        ONAPP_FIELD_MAP       => '_updated_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'arch' => array(
-                        ONAPP_FIELD_MAP => '_arch',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'arch'       => array(
+                        ONAPP_FIELD_MAP      => '_arch',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'total' => array(
-                        ONAPP_FIELD_MAP => '_total',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'total'      => array(
+                        ONAPP_FIELD_MAP      => '_total',
+                        ONAPP_FIELD_TYPE     => 'integer',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'distro' => array(
-                        ONAPP_FIELD_MAP => '_distro',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'distro'     => array(
+                        ONAPP_FIELD_MAP      => '_distro',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'count' => array(
-                        ONAPP_FIELD_MAP => '_count',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'count'      => array(
+                        ONAPP_FIELD_MAP      => '_count',
+                        ONAPP_FIELD_TYPE     => 'integer',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'tail' => array(
-                        ONAPP_FIELD_MAP => '_tail',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'tail'       => array(
+                        ONAPP_FIELD_MAP      => '_tail',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'edition' => array(
-                        ONAPP_FIELD_MAP => '_edition',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'edition'    => array(
+                        ONAPP_FIELD_MAP      => '_edition',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'license' => array(
-                        ONAPP_FIELD_MAP => '_license',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'license'    => array(
+                        ONAPP_FIELD_MAP      => '_license',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
                 );
                 break;
 
             case 3.0:
-			case 3.1:
+            case 3.1:
             case 3.2:
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+            case 4.2:
+            case 4.3:
+            case 5.0:
                 $this->fields = $this->initFields( 2.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
                 break;
         }
 
         parent::initFields( $version, __CLASS__ );
+
         return $this->fields;
     }
 }

@@ -8,7 +8,7 @@
  * @package     OnApp
  * @subpackage  BillingPlan
  * @author      Yakubskiy Yuriy
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -26,7 +26,6 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
      * @var string
      */
     var $_tagRoot = 'base_resource';
-
     /**
      * alias processing the object data
      *
@@ -34,146 +33,169 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
      */
     var $_resource = 'base_resources';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
-     * @param string|float $version   OnApp API version
-     * @param string       $className current class' name
+     * @param string|float $version OnApp API version
+     * @param string $className current class' name
      *
      * @return array
      */
     public function initFields( $version = null, $className = '' ) {
-        switch( $version ) {
+        switch ( $version ) {
             case '2.1':
                 $this->fields = array(
-                    'id' => array(
-                        ONAPP_FIELD_MAP => '_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'id'              => array(
+                        ONAPP_FIELD_MAP       => '_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
-                        ONAPP_FIELD_REQUIRED => true
+                        ONAPP_FIELD_REQUIRED  => true
                     ),
-                    'label' => array(
-                        ONAPP_FIELD_MAP => '_label',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'label'           => array(
+                        ONAPP_FIELD_MAP       => '_label',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true
                     ),
-                    'created_at' => array(
-                        ONAPP_FIELD_MAP => '_created_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                    'created_at'      => array(
+                        ONAPP_FIELD_MAP       => '_created_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'updated_at' => array(
-                        ONAPP_FIELD_MAP => '_updated_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                    'updated_at'      => array(
+                        ONAPP_FIELD_MAP       => '_updated_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'limits' => array(
-                        ONAPP_FIELD_MAP => '_limits',
+                    'limits'          => array(
+                        ONAPP_FIELD_MAP       => '_limits',
                         ONAPP_FIELD_READ_ONLY => true,
-                        ONAPP_FIELD_TYPE => 'array',
-                        ONAPP_FIELD_CLASS => 'BillingPlan_BaseResource_Limit',
+                        ONAPP_FIELD_TYPE      => 'array',
+                        ONAPP_FIELD_CLASS     => 'BillingPlan_BaseResource_Limit',
                     ),
                     'billing_plan_id' => array(
-                        ONAPP_FIELD_MAP => '_billing_plan_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                        ONAPP_FIELD_MAP       => '_billing_plan_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
-                        ONAPP_FIELD_REQUIRED => true,
+                        ONAPP_FIELD_REQUIRED  => true,
                     ),
-                    'unit' => array(
-                        ONAPP_FIELD_MAP => '_unit',
+                    'unit'            => array(
+                        ONAPP_FIELD_MAP       => '_unit',
                         ONAPP_FIELD_READ_ONLY => true,
-                        ONAPP_FIELD_REQUIRED => true,
+                        ONAPP_FIELD_REQUIRED  => true,
                     ),
-                    'resource_name' => array(
-                        ONAPP_FIELD_MAP => '_resource_name',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'resource_name'   => array(
+                        ONAPP_FIELD_MAP       => '_resource_name',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'prices' => array(
-                        ONAPP_FIELD_MAP => '_prices',
+                    'prices'          => array(
+                        ONAPP_FIELD_MAP       => '_prices',
                         ONAPP_FIELD_READ_ONLY => true,
-                        ONAPP_FIELD_TYPE => 'array',
-                        ONAPP_FIELD_CLASS => 'BillingPlan_BaseResource_Price',
+                        ONAPP_FIELD_TYPE      => 'array',
+                        ONAPP_FIELD_CLASS     => 'BillingPlan_BaseResource_Price',
                     ),
-                    'limit' => array(
-                        ONAPP_FIELD_MAP => '_limit',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'limit'           => array(
+                        ONAPP_FIELD_MAP      => '_limit',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'limit_type' => array(
-                        ONAPP_FIELD_MAP => '_limit_type',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'limit_type'      => array(
+                        ONAPP_FIELD_MAP      => '_limit_type',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'limit_free' => array(
-                        ONAPP_FIELD_MAP => '_limit_free',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'limit_free'      => array(
+                        ONAPP_FIELD_MAP      => '_limit_free',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'price' => array(
-                        ONAPP_FIELD_MAP => '_price',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'price'           => array(
+                        ONAPP_FIELD_MAP      => '_price',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'price_on' => array(
-                        ONAPP_FIELD_MAP => '_price_on',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'price_on'        => array(
+                        ONAPP_FIELD_MAP      => '_price_on',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'price_off' => array(
-                        ONAPP_FIELD_MAP => '_price_off',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'price_off'       => array(
+                        ONAPP_FIELD_MAP      => '_price_off',
+                        ONAPP_FIELD_TYPE     => 'string',
                         ONAPP_FIELD_REQUIRED => true,
                     ),
-                    'resource_class' => array(
-                        ONAPP_FIELD_MAP => '_resource_class',
-                        ONAPP_FIELD_TYPE => 'string',
-                        ONAPP_FIELD_REQUIRED => true,
+                    'resource_class'  => array(
+                        ONAPP_FIELD_MAP           => '_resource_class',
+                        ONAPP_FIELD_TYPE          => 'string',
+                        ONAPP_FIELD_REQUIRED      => true,
                         ONAPP_FIELD_DEFAULT_VALUE => 'Resource::CpuShare'
-                    ),
-                    'limit_type' => array(
-                        ONAPP_FIELD_MAP => '_limit_type',
-                        ONAPP_FIELD_TYPE => 'string',
-                        ONAPP_FIELD_REQUIRED => true,
                     ),
                 );
                 break;
 
             case 2.2:
             case 2.3:
-                $this->fields                = $this->initFields( 2.1 );
-                $this->fields[ 'target_id' ] = array(
-                    ONAPP_FIELD_MAP => '_target_id',
-                    ONAPP_FIELD_TYPE => 'integer',
+                $this->fields              = $this->initFields( 2.1 );
+                $this->fields['target_id'] = array(
+                    ONAPP_FIELD_MAP       => '_target_id',
+                    ONAPP_FIELD_TYPE      => 'integer',
                     ONAPP_FIELD_READ_ONLY => true
                 );
                 break;
 
-			case 3.0:
-			case 3.1:
+            case 3.0:
+            case 3.1:
             case 3.2:
-				$this->fields = $this->initFields( 2.3 );
-				$this->fields[ 'is_default' ] = array(
-					ONAPP_FIELD_MAP       => 'is_default',
-					ONAPP_FIELD_TYPE      => 'boolean',
-				);
-				$this->fields[ 'use_default' ] = array(
-					ONAPP_FIELD_MAP       => 'use_default',
-					ONAPP_FIELD_TYPE      => 'boolean',
-				);
-				$this->fields[ 'preferences' ] = array(
-					ONAPP_FIELD_MAP       => 'preferences',
-					ONAPP_FIELD_TYPE      => 'string',
-				);
-				break;
-		}
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+                $this->fields                = $this->initFields( 2.3 );
+                $this->fields['is_default']  = array(
+                    ONAPP_FIELD_MAP  => '_is_default',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['use_default'] = array(
+                    ONAPP_FIELD_MAP  => '_use_default',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['preferences'] = array(
+                    ONAPP_FIELD_MAP  => '_preferences',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 4.2:
+                $this->fields = $this->initFields( 4.1 );
+                break;
+            case 4.3:
+                $this->fields = $this->initFields( 4.2 );
+                break;
+            case 5.0:
+                $this->fields = $this->initFields( 4.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
+        }
 
         parent::initFields( $version, __CLASS__ );
+
         return $this->fields;
     }
 
@@ -187,10 +209,11 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
      */
     function getResource( $action = ONAPP_GETRESOURCE_DEFAULT ) {
         $show_log_msg = true;
-        switch( $action ) {
+        switch ( $action ) {
             case ONAPP_GETRESOURCE_DEFAULT:
                 /**
                  * ROUTE :
+                 *
                  * @name billing_plan_base_resources
                  * @method GET
                  * @alias   /billing_plans/:billing_plan_id/base_resources(.:format)
@@ -198,6 +221,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name billing_plan_base_resource
                  * @method GET
                  * @alias    /billing_plans/:billing_plan_id/base_resources/:id(.:format)
@@ -205,6 +229,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name
                  * @method POST
                  * @alias   /billing_plans/:billing_plan_id/base_resources(.:format)
@@ -212,6 +237,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name
                  * @method PUT
                  * @alias  /billing_plans/:billing_plan_id/base_resources/:id(.:format)
@@ -219,20 +245,20 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name
                  * @method DELETE
                  * @alias   /billing_plans/:billing_plan_id/base_resources/:id(.:format)
                  * @format  {:controller=>"base_resources", :action=>"destroy"}
                  */
-                if( is_null( $this->_billing_plan_id ) && is_null( $this->_obj->_billing_plan_id ) ) {
+                if ( is_null( $this->_billing_plan_id ) && is_null( $this->_obj->_billing_plan_id ) ) {
                     $this->logger->error(
                         'getResource( ' . $action . ' ): argument _billing_plan_id not set.',
                         __FILE__,
                         __LINE__
                     );
-                }
-                else {
-                    if( is_null( $this->_billing_plan_id ) ) {
+                } else {
+                    if ( is_null( $this->_billing_plan_id ) ) {
                         $this->_billing_plan_id = $this->_obj->_billing_plan_id;
                     }
                 }
@@ -246,7 +272,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                 break;
         }
 
-        if( $show_log_msg ) {
+        if ( $show_log_msg ) {
             $this->logger->debug( 'getResource( ' . $action . ' ): return ' . $resource );
         }
 
@@ -263,16 +289,15 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
      * @access public
      */
     function getList( $billing_plan_id = null, $url_args = null ) {
-        if( is_null( $billing_plan_id ) && ! is_null( $this->_billing_plan_id ) ) {
+        if ( is_null( $billing_plan_id ) && ! is_null( $this->_billing_plan_id ) ) {
             $billing_plan_id = $this->_billing_plan_id;
         }
 
-        if( ! is_null( $billing_plan_id ) ) {
+        if ( ! is_null( $billing_plan_id ) ) {
             $this->_billing_plan_id = $billing_plan_id;
 
             return parent::getList();
-        }
-        else {
+        } else {
             $this->logger->error(
                 'getList: argument _billing_plan_id not set.',
                 __FILE__,
@@ -303,7 +328,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
      * @access public
      */
     function save() {
-        if( is_null( $this->_limit ) ) {
+        if ( is_null( $this->_limit ) ) {
             $this->_limit = isset( $this->_limits->_limit )
                 ? $this->_limits->_limit : (
                 isset( $this->_obj->_limits->_limit )
@@ -312,7 +337,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                 );
         }
 
-        if( is_null( $this->_limit_free ) ) {
+        if ( is_null( $this->_limit_free ) ) {
             $this->_limit_free = isset( $this->_limits->_limit_free )
                 ? $this->_limits->_limit_free : (
                 isset( $this->_obj->_limits->_limit_free )
@@ -321,7 +346,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                 );
         }
 
-        if( is_null( $this->_price_on ) ) {
+        if ( is_null( $this->_price_on ) ) {
             $this->_price_on = isset( $this->_prices->_price_on )
                 ? $this->_prices->_price_on : (
                 isset( $this->_obj->_prices->_price_on ) ?
@@ -330,7 +355,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                 );
         }
 
-        if( is_null( $this->_price_off ) ) {
+        if ( is_null( $this->_price_off ) ) {
             $this->_price_off = isset( $this->_limits->_price_off )
                 ? $this->_prices->_price_off : (
                 isset( $this->_obj->_prices->_price_off )
@@ -339,7 +364,7 @@ class OnApp_BillingPlan_BaseResource extends OnApp {
                 );
         }
 
-        if( is_null( $this->_price ) ) {
+        if ( is_null( $this->_price ) ) {
             $this->_price = isset( $this->_limits->_price )
                 ? $this->_prices->_price
                 : ( isset( $this->_obj->_prices->_price )

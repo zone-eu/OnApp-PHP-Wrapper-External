@@ -9,7 +9,7 @@
  * @package     OnApp
  * @subpackage  EdgeGroup
  * @author      Yakubskiy Yuriy
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -23,8 +23,7 @@
  *
  *
  */
-class OnApp_EdgeGroup_AvailableLocation extends Location {
-
+class OnApp_EdgeGroup_AvailableLocation extends OnApp_EdgeGroup_Location {
     /**
      * root tag used in the API request
      *
@@ -37,9 +36,4 @@ class OnApp_EdgeGroup_AvailableLocation extends Location {
      * @var string
      */
     var $_resource = '';
-
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
 }

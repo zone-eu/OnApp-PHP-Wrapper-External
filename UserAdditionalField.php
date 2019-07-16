@@ -7,7 +7,7 @@
  * @category    API wrapper
  * @package     OnApp
  * @author      Yuriy Yakubskiy
- * @copyright   (c) 2012 OnApp
+ * @copyright   © 2012 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -21,6 +21,11 @@
  *
  * For full fields reference and curl request details visit: ( http://help.onapp.com/manual.php?m=2 )
  */
+
+
+define( 'ONAPP_GETRESOURCE_SEARCH', 'search' );
+
+
 class OnApp_UserAdditionalField extends OnApp {
     /**
      * root tag used in the API request
@@ -28,7 +33,6 @@ class OnApp_UserAdditionalField extends OnApp {
      * @var string
      */
     var $_tagRoot = 'user_additional_field';
-
     /**
      * alias processing the object data
      *
@@ -36,50 +40,71 @@ class OnApp_UserAdditionalField extends OnApp {
      */
     var $_resource = 'user_additional_fields';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
-     * @param string|float $version   OnApp API version
-     * @param string       $className current class' name
+     * @param string|float $version OnApp API version
+     * @param string $className current class' name
      *
      * @return array
      */
     public function initFields( $version = null, $className = '' ) {
-        switch( $version ) {
+        switch ( $version ) {
             case '2.3':
                 $this->fields = array(
-                    'id' => array(
-                        ONAPP_FIELD_MAP => '_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'id'            => array(
+                        ONAPP_FIELD_MAP       => '_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true
                     ),
-                    'name' => array(
-                        ONAPP_FIELD_MAP => '_name',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'name'          => array(
+                        ONAPP_FIELD_MAP       => '_name',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
                     'default_value' => array(
-                        ONAPP_FIELD_MAP => '_default_value',
-                        ONAPP_FIELD_TYPE => 'integer',
+                        ONAPP_FIELD_MAP       => '_default_value',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'data_type' => array(
-                        ONAPP_FIELD_MAP => '_data_type',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'data_type'     => array(
+                        ONAPP_FIELD_MAP       => '_data_type',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
                 );
                 break;
 
             case 3.0:
-			case 3.1:
+            case 3.1:
             case 3.2:
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+            case 4.2:
+            case 4.3:
+            case 5.0:
                 $this->fields = $this->initFields( 2.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
                 break;
 
             default:
@@ -92,6 +117,15 @@ class OnApp_UserAdditionalField extends OnApp {
         }
 
         parent::initFields( $version, __CLASS__ );
+
         return $this->fields;
+    }
+
+    function getResource( $action = ONAPP_GETRESOURCE_DEFAULT ) {
+        return parent::getResource( $action );
+    }
+
+    public function search( $question ) {
+        return $this->sendGet( ONAPP_SEARCH, null, array( 'q' => $question ) );
     }
 }

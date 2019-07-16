@@ -6,7 +6,7 @@
  * @package     OnApp
  * @subpackage  LoadBalancingCluster
  * @author      Yakubskiy Yuriy
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -17,7 +17,7 @@
  * The OnApp_LoadBalancingCluster_AutoScalingInMemory class uses no basic methods and is nested of OnApp_LoadBalancingCluster class
  *
  */
-class OnApp_LoadBalancingCluster_AutoScalingInMemory extends AutoScaling {
+class OnApp_LoadBalancingCluster_AutoScalingInMemory extends OnApp_LoadBalancingCluster_AutoScaling {
     public function __construct() {
         parent::__construct();
         $this->className = __CLASS__;

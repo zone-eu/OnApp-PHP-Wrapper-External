@@ -10,7 +10,7 @@
  * @package     OnApp
  * @subpackage  EdgeGroup
  * @author      Yakubskiy Yuriy
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -28,7 +28,6 @@ class OnApp_EdgeGroup_Location extends OnApp {
      * @var string
      */
     var $_tagRoot = '';
-
     /**
      * alias processing the object data
      *
@@ -36,79 +35,74 @@ class OnApp_EdgeGroup_Location extends OnApp {
      */
     var $_resource = '';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
-     * @param string|float $version   OnApp API version
-     * @param string       $className current class' name
+     * @param string|float $version OnApp API version
+     * @param string $className current class' name
      *
      * @return array
      */
     public function initFields( $version = null, $className = '' ) {
-        switch( $version ) {
+        switch ( $version ) {
             case '2.3':
                 $this->fields = array(
-                    'city' => array(
-                        ONAPP_FIELD_MAP => '_city',
+                    'city'        => array(
+                        ONAPP_FIELD_MAP  => '_city',
                         ONAPP_FIELD_TYPE => 'string',
                     ),
-                    'region' => array(
-                        ONAPP_FIELD_MAP => '_region',
+                    'region'      => array(
+                        ONAPP_FIELD_MAP  => '_region',
                         ONAPP_FIELD_TYPE => 'string',
                     ),
-                    'price' => array(
-                        ONAPP_FIELD_MAP => '_price',
+                    'price'       => array(
+                        ONAPP_FIELD_MAP  => '_price',
                         ONAPP_FIELD_TYPE => 'float',
                     ),
-                    'latitude' => array(
-                        ONAPP_FIELD_MAP => '_latitude',
+                    'latitude'    => array(
+                        ONAPP_FIELD_MAP  => '_latitude',
                         ONAPP_FIELD_TYPE => 'float',
                     ),
-                    'country' => array(
-                        ONAPP_FIELD_MAP => '_country',
+                    'country'     => array(
+                        ONAPP_FIELD_MAP  => '_country',
                         ONAPP_FIELD_TYPE => 'string',
                     ),
-                    'deleted' => array(
-                        ONAPP_FIELD_MAP => '_deleted',
+                    'deleted'     => array(
+                        ONAPP_FIELD_MAP  => '_deleted',
                         ONAPP_FIELD_TYPE => 'boolean',
                     ),
-                    'id' => array(
-                        ONAPP_FIELD_MAP => '_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'id'          => array(
+                        ONAPP_FIELD_MAP       => '_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
                     'geoblocking' => array(
-                        ONAPP_FIELD_MAP => '_geoblocking',
+                        ONAPP_FIELD_MAP  => '_geoblocking',
                         ONAPP_FIELD_TYPE => 'boolean',
                     ),
-                    'createdAt' => array(
-                        ONAPP_FIELD_MAP => '_createdAt',
+                    'createdAt'   => array(
+                        ONAPP_FIELD_MAP  => '_createdAt',
                         ONAPP_FIELD_TYPE => 'string',
                     ),
-                    'updatedAt' => array(
-                        ONAPP_FIELD_MAP => '_updatedAt',
+                    'updatedAt'   => array(
+                        ONAPP_FIELD_MAP  => '_updatedAt',
                         ONAPP_FIELD_TYPE => 'integer',
                     ),
                     'description' => array(
-                        ONAPP_FIELD_MAP => '_description',
+                        ONAPP_FIELD_MAP  => '_description',
                         ONAPP_FIELD_TYPE => 'string',
                     ),
-                    'longitude' => array(
-                        ONAPP_FIELD_MAP => '_longitude',
+                    'longitude'   => array(
+                        ONAPP_FIELD_MAP  => '_longitude',
                         ONAPP_FIELD_TYPE => 'float',
                     ),
-                    'status' => array(
-                        ONAPP_FIELD_MAP => '_status',
+                    'status'      => array(
+                        ONAPP_FIELD_MAP  => '_status',
                         ONAPP_FIELD_TYPE => 'string',
                     ),
-                    'operator' => array(
-                        ONAPP_FIELD_MAP => '_operator',
-                        ONAPP_FIELD_TYPE => 'array',
+                    'operator'    => array(
+                        ONAPP_FIELD_MAP   => '_operator',
+                        ONAPP_FIELD_TYPE  => 'array',
                         ONAPP_FIELD_CLASS => 'EdgeGroup_Location_Operator',
 
                     ),
@@ -116,37 +110,70 @@ class OnApp_EdgeGroup_Location extends OnApp {
                 );
                 break;
 
-			case 3.0:
-				$this->fields = $this->initFields( 2.3 );
-				break;
+            case 3.0:
+                $this->fields = $this->initFields( 2.3 );
+                break;
 
-			case 3.1:
+            case 3.1:
             case 3.2:
-				$this->fields = $this->initFields( 3.0 );
-				$this->fields[ 'geoBlocking' ] = array(
-					ONAPP_FIELD_MAP  => 'geoBlocking',
-					ONAPP_FIELD_TYPE => 'boolean',
-				);
-				$this->fields[ 'onSaleStreamSupported' ] = array(
-					ONAPP_FIELD_MAP  => 'onSaleStreamSupported',
-					ONAPP_FIELD_TYPE => 'boolean',
-				);
-				$this->fields[ 'onSaleHttpSupported' ] = array(
-					ONAPP_FIELD_MAP  => 'onSaleHttpSupported',
-					ONAPP_FIELD_TYPE => 'boolean',
-				);
-				$this->fields[ 'streamSupported' ] = array(
-					ONAPP_FIELD_MAP  => 'streamSupported',
-					ONAPP_FIELD_TYPE => 'boolean',
-				);
-				$this->fields[ 'httpSupported' ] = array(
-					ONAPP_FIELD_MAP  => 'httpSupported',
-					ONAPP_FIELD_TYPE => 'boolean',
-				);
-				break;
-		}
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+                $this->fields                          = $this->initFields( 3.0 );
+                $this->fields['geoBlocking']           = array(
+                    ONAPP_FIELD_MAP  => 'geoBlocking',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['onSaleStreamSupported'] = array(
+                    ONAPP_FIELD_MAP  => 'onSaleStreamSupported',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['onSaleHttpSupported']   = array(
+                    ONAPP_FIELD_MAP  => 'onSaleHttpSupported',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['streamSupported']       = array(
+                    ONAPP_FIELD_MAP  => 'streamSupported',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                $this->fields['httpSupported']         = array(
+                    ONAPP_FIELD_MAP  => 'httpSupported',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                break;
+            case 4.2:
+                $this->fields = $this->initFields( 4.1 );
+                break;
+            case 4.3:
+                $this->fields = $this->initFields( 4.2 );
+                break;
+            case 5.0:
+                $this->fields = $this->initFields( 4.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
+        }
 
         parent::initFields( $version, __CLASS__ );
+
         return $this->fields;
     }
 
@@ -157,8 +184,8 @@ class OnApp_EdgeGroup_Location extends OnApp {
      *
      * @access public
      */
-    function activate( $action_name ) {
-        switch( $action_name ) {
+    function activateCheck( $action_name ) {
+        switch ( $action_name ) {
             case ONAPP_ACTIVATE_GETLIST:
             case ONAPP_ACTIVATE_SAVE:
             case ONAPP_ACTIVATE_DELETE:

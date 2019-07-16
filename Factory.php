@@ -1,4 +1,5 @@
 <?php
+
 /**
  * API Factory Wrapper for OnApp
  *
@@ -8,16 +9,16 @@
  * @category    Factory
  * @package     OnApp
  * @author      Andrew Yatskovets
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  */
 class OnApp_Factory extends OnApp {
     /**
      * Object constructor
      *
-     * @param string      $hostname
-     * @param string      $username
-     * @param string      $password
+     * @param string $hostname
+     * @param string $username
+     * @param string $password
      * @param string|null $proxy
      */
     public function __construct( $hostname, $username, $password, $proxy = null ) {
@@ -30,8 +31,8 @@ class OnApp_Factory extends OnApp {
     /**
      * Craft new object
      *
-     * @param string $name  class name
-     * @param bool   $debug flag for debug mode
+     * @param string $name class name
+     * @param bool $debug flag for debug mode
      *
      * @return object instance of class
      */
@@ -47,6 +48,7 @@ class OnApp_Factory extends OnApp {
         $result->options = $this->options;
         $result->_ch     = $this->_ch;
         $result->initFields( $this->getAPIVersion() );
+
         return $result;
     }
 }

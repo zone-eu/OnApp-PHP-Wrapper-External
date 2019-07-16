@@ -8,7 +8,7 @@
  * @package     OnApp
  * @subpackage  VirtualMachine_NetworkInterface
  * @author      Yuriy Yakubskiy
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -30,7 +30,6 @@ class OnApp_VirtualMachine_NetworkInterface_Usage extends OnApp {
      * @var string
      */
     var $_tagRoot = 'net_hourly_stat';
-
     /**
      * alias processing the object data
      *
@@ -38,77 +37,104 @@ class OnApp_VirtualMachine_NetworkInterface_Usage extends OnApp {
      */
     var $_resource = 'usage';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
-     * @param string|float $version   OnApp API version
-     * @param string       $className current class' name
+     * @param string|float $version OnApp API version
+     * @param string $className current class' name
      *
      * @return array
      */
     public function initFields( $version = null, $className = '' ) {
-        switch( $version ) {
+        switch ( $version ) {
             case '2.0':
-			case '2.1':
-			case '2.2':
-			case '2.3':
+            case '2.1':
+            case '2.2':
+            case '2.3':
                 $this->fields = array(
-                    'id' => array(
-                        ONAPP_FIELD_MAP => '_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'id'                   => array(
+                        ONAPP_FIELD_MAP       => '_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true
                     ),
-                    'created_at' => array(
-                        ONAPP_FIELD_MAP => '_created_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                    'created_at'           => array(
+                        ONAPP_FIELD_MAP       => '_created_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'updated_at' => array(
-                        ONAPP_FIELD_MAP => '_updated_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                    'updated_at'           => array(
+                        ONAPP_FIELD_MAP       => '_updated_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'data_received' => array(
-                        ONAPP_FIELD_MAP => '_data_received',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'stat_time'            => array(
+                        ONAPP_FIELD_MAP       => '_stat_time',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'data_sent' => array(
-                        ONAPP_FIELD_MAP => '_data_sent',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'data_received'        => array(
+                        ONAPP_FIELD_MAP       => '_data_received',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'user_id' => array(
-                        ONAPP_FIELD_MAP => '_user_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'data_sent'            => array(
+                        ONAPP_FIELD_MAP       => '_data_sent',
+                        ONAPP_FIELD_TYPE      => 'integer',
+                        ONAPP_FIELD_READ_ONLY => true,
+                    ),
+                    'user_id'              => array(
+                        ONAPP_FIELD_MAP       => '_user_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
                     'network_interface_id' => array(
-                        ONAPP_FIELD_MAP => '_network_interface_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                        ONAPP_FIELD_MAP       => '_network_interface_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'virtual_machine_id' => array(
-                        ONAPP_FIELD_MAP => '_virtual_machine_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'virtual_machine_id'   => array(
+                        ONAPP_FIELD_MAP       => '_virtual_machine_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     )
                 );
                 break;
 
             case 3.0:
-			case 3.1:
+            case 3.1:
             case 3.2:
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+            case 4.2:
+            case 4.3:
+            case 5.0:
                 $this->fields = $this->initFields( 2.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
                 break;
         }
 
         parent::initFields( $version, __CLASS__ );
+
         return $this->fields;
     }
 
@@ -122,37 +148,36 @@ class OnApp_VirtualMachine_NetworkInterface_Usage extends OnApp {
      */
     function getResource( $action = ONAPP_GETRESOURCE_DEFAULT ) {
         $show_log_msg = true;
-        switch( $action ) {
+        switch ( $action ) {
             case ONAPP_GETRESOURCE_DEFAULT:
                 /**
                  * ROUTE :
+                 *
                  * @name virtual_machine_backups
                  * @method GET
                  * @alias   /virtual_machines/:virtual_machine_id/backups(.:format)
                  * @format  {:controller=>"backups", :action=>"index"}
                  */
-                if( is_null( $this->_virtual_machine_id ) && is_null( $this->_obj->_virtual_machine_id ) ) {
+                if ( is_null( $this->_virtual_machine_id ) && is_null( $this->_obj->_virtual_machine_id ) ) {
                     $this->logger->error(
                         'getResource( ' . $action . ' ): argument _virtual_machine_id not set.',
                         __FILE__,
                         __LINE__
                     );
-                }
-                else {
-                    if( is_null( $this->_virtual_machine_id ) ) {
+                } else {
+                    if ( is_null( $this->_virtual_machine_id ) ) {
                         $this->_virtual_machine_id = $this->_obj->_virtual_machine_id;
                     }
                 }
 
-                if( is_null( $this->_network_interface_id ) && is_null( $this->_obj->_network_interface_id ) ) {
+                if ( is_null( $this->_network_interface_id ) && is_null( $this->_obj->_network_interface_id ) ) {
                     $this->logger->error(
                         'getResource( ' . $action . ' ): argument _network_interface_id not set.',
                         __FILE__,
                         __LINE__
                     );
-                }
-                else {
-                    if( is_null( $this->_network_interface_id ) ) {
+                } else {
+                    if ( is_null( $this->_network_interface_id ) ) {
                         $this->_network_interface_id = $this->_obj->_network_interface_id;
                     }
                 }
@@ -165,7 +190,7 @@ class OnApp_VirtualMachine_NetworkInterface_Usage extends OnApp {
                 break;
         }
 
-        if( $show_log_msg ) {
+        if ( $show_log_msg ) {
             $this->logger->debug( 'getResource( ' . $action . ' ): return ' . $resource );
         }
 
@@ -176,21 +201,20 @@ class OnApp_VirtualMachine_NetworkInterface_Usage extends OnApp {
      * Sends an API request to get the Objects. After requesting,
      * unserializes the received response into the array of Objects
      *
-     * @param integer $virtual_machine_id   Virtual Machine id
+     * @param integer $virtual_machine_id Virtual Machine id
      * @param integer $network_interface_id Network Interface id
      *
      * @return mixed an array of Object instances on success. Otherwise false
      * @access public
      */
-    function getList( $virtual_machine_id = null, $network_interface_id = null, $url_args = '' ) {
-        if( is_null( $virtual_machine_id ) && ! is_null( $this->_virtual_machine_id ) ) {
+    function getList( $virtual_machine_id = null, $network_interface_id = null, $url_args = null ) {
+        if ( is_null( $virtual_machine_id ) && ! is_null( $this->_virtual_machine_id ) ) {
             $virtual_machine_id = $this->_virtual_machine_id;
         }
 
-        if( ! is_null( $virtual_machine_id ) ) {
+        if ( ! is_null( $virtual_machine_id ) ) {
             $this->_virtual_machine_id = $virtual_machine_id;
-        }
-        else {
+        } else {
             $this->logger->error(
                 'getList: argument _virtual_machine_id not set.',
                 __FILE__,
@@ -198,14 +222,13 @@ class OnApp_VirtualMachine_NetworkInterface_Usage extends OnApp {
             );
         }
 
-        if( is_null( $network_interface_id ) && ! is_null( $this->_network_interface_id ) ) {
+        if ( is_null( $network_interface_id ) && ! is_null( $this->_network_interface_id ) ) {
             $network_interface_id = $this->_network_interface_id;
         }
 
-        if( ! is_null( $network_interface_id ) ) {
+        if ( ! is_null( $network_interface_id ) ) {
             $this->_network_interface_id = $network_interface_id;
-        }
-        else {
+        } else {
             $this->logger->error(
                 'getList: argument _network_interface_id not set.',
                 __FILE__,

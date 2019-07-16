@@ -8,7 +8,7 @@
  * @package     OnApp
  * @subpackage  CDNResource
  * @author      Yakubskiy Yuriy
- * @copyright   (c) 2012 OnApp
+ * @copyright   © 2012 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -28,7 +28,6 @@ class OnApp_CDNResource_Bandwidth extends OnApp {
      * @var string
      */
     var $_tagRoot = 'stat';
-
     /**
      * alias processing the object data
      *
@@ -36,21 +35,16 @@ class OnApp_CDNResource_Bandwidth extends OnApp {
      */
     var $_resource = 'cdn_resources/bandwidth';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
-     * @param string|float $version   OnApp API version
-     * @param string       $className current class' name
+     * @param string|float $version OnApp API version
+     * @param string $className current class' name
      *
      * @return array
      */
     public function initFields( $version = null, $className = '' ) {
-        switch( $version ) {
+        switch ( $version ) {
             case '2.0':
             case '2.1':
             case '2.2':
@@ -58,18 +52,18 @@ class OnApp_CDNResource_Bandwidth extends OnApp {
             case '2.3':
                 $this->fields = array(
                     'non_cached' => array(
-                        ONAPP_FIELD_MAP => '_non_cached',
-                        ONAPP_FIELD_TYPE => 'string',
+                        ONAPP_FIELD_MAP       => '_non_cached',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'date' => array(
-                        ONAPP_FIELD_MAP => '_date',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'date'       => array(
+                        ONAPP_FIELD_MAP       => '_date',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'cached' => array(
-                        ONAPP_FIELD_MAP => '_cached',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'cached'     => array(
+                        ONAPP_FIELD_MAP       => '_cached',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
                 );
@@ -77,13 +71,48 @@ class OnApp_CDNResource_Bandwidth extends OnApp {
                 break;
 
             case 3.0:
-			case 3.1:
+            case 3.1:
             case 3.2:
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+            case 4.2:
                 $this->fields = $this->initFields( 2.3 );
+                break;
+            case 4.3:
+                $this->fields = $this->initFields( 4.2 );
+                break;
+            case 5.0:
+                $this->fields = $this->initFields( 4.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->logger->error(
+                    'cdn_resources/bandwidth.: Removed the deprecated requests',
+                    __FILE__,
+                    __LINE__
+                );
                 break;
         }
 
         parent::initFields( $version, __CLASS__ );
+
         return $this->fields;
     }
 
@@ -96,7 +125,7 @@ class OnApp_CDNResource_Bandwidth extends OnApp {
      * @return mixed an array of Object instances on success. Otherwise false
      * @access public
      */
-    public function getList( $url_args = null ) {
+    public function getList( $url_args = null, $params = null ) {
         return parent::getList( null, $url_args );
     }
 
@@ -107,8 +136,8 @@ class OnApp_CDNResource_Bandwidth extends OnApp {
      *
      * @access public
      */
-    function activate( $action_name ) {
-        switch( $action_name ) {
+    function activateCheck( $action_name ) {
+        switch ( $action_name ) {
             case ONAPP_ACTIVATE_LOAD:
             case ONAPP_ACTIVATE_SAVE:
             case ONAPP_ACTIVATE_DELETE:

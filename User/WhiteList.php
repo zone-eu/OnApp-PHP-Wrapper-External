@@ -10,7 +10,7 @@
  * @package     OnApp
  * @subpackage  User
  * @author      Yakubskiy Yuriy
- * @copyright   (c) 2011 OnApp
+ * @copyright   © 2011 OnApp
  * @link        http://www.onapp.com/
  * @see         OnApp
  */
@@ -32,7 +32,6 @@ class OnApp_User_WhiteList extends OnApp {
      * @var string
      */
     var $_tagRoot = 'user_white_list';
-
     /**
      * alias processing the object data
      *
@@ -40,54 +39,49 @@ class OnApp_User_WhiteList extends OnApp {
      */
     var $_resource = 'user_white_lists';
 
-    public function __construct() {
-        parent::__construct();
-        $this->className = __CLASS__;
-    }
-
     /**
      * API Fields description
      *
-     * @param string|float $version   OnApp API version
-     * @param string       $className current class' name
+     * @param string|float $version OnApp API version
+     * @param string $className current class' name
      *
      * @return array
      */
     public function initFields( $version = null, $className = '' ) {
-        switch( $version ) {
+        switch ( $version ) {
             case '2.0':
             case '2.1':
-			case 2.2:
-			case 2.3:
+            case 2.2:
+            case 2.3:
                 $this->fields = array(
-                    'id' => array(
-                        ONAPP_FIELD_MAP => '_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'id'          => array(
+                        ONAPP_FIELD_MAP       => '_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'created_at' => array(
-                        ONAPP_FIELD_MAP => '_created_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                    'created_at'  => array(
+                        ONAPP_FIELD_MAP       => '_created_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'updated_at' => array(
-                        ONAPP_FIELD_MAP => '_updated_at',
-                        ONAPP_FIELD_TYPE => 'datetime',
+                    'updated_at'  => array(
+                        ONAPP_FIELD_MAP       => '_updated_at',
+                        ONAPP_FIELD_TYPE      => 'datetime',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'user_id' => array(
-                        ONAPP_FIELD_MAP => '_user_id',
-                        ONAPP_FIELD_TYPE => 'integer',
+                    'user_id'     => array(
+                        ONAPP_FIELD_MAP       => '_user_id',
+                        ONAPP_FIELD_TYPE      => 'integer',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'ip' => array(
-                        ONAPP_FIELD_MAP => '_ip',
-                        ONAPP_FIELD_TYPE => 'string',
+                    'ip'          => array(
+                        ONAPP_FIELD_MAP       => '_ip',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
                     'description' => array(
-                        ONAPP_FIELD_MAP => '_description',
-                        ONAPP_FIELD_TYPE => 'string',
+                        ONAPP_FIELD_MAP       => '_description',
+                        ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
 
@@ -95,13 +89,40 @@ class OnApp_User_WhiteList extends OnApp {
                 break;
 
             case 3.0:
-			case 3.1:
+            case 3.1:
             case 3.2:
+            case 3.3:
+            case 3.4:
+            case 3.5:
+            case 4.0:
+            case 4.1:
+            case 4.2:
+            case 4.3:
+            case 5.0:
                 $this->fields = $this->initFields( 2.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
                 break;
         }
 
         parent::initFields( $version, __CLASS__ );
+
         return $this->fields;
     }
 
@@ -114,10 +135,11 @@ class OnApp_User_WhiteList extends OnApp {
      * @access public
      */
     function getResource( $action = ONAPP_GETRESOURCE_DEFAULT ) {
-        switch( $action ) {
+        switch ( $action ) {
             case ONAPP_GETRESOURCE_DEFAULT:
                 /**
                  * ROUTE :
+                 *
                  * @name user_user_white_lists
                  * @method GET
                  * @alias   /users/:user_id/user_white_lists(.:format)
@@ -125,6 +147,7 @@ class OnApp_User_WhiteList extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name user_user_white_list
                  * @method GET
                  * @alias  /users/:user_id/user_white_lists/:id(.:format)
@@ -132,6 +155,7 @@ class OnApp_User_WhiteList extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name
                  * @method PUT
                  * @alias  /users/:user_id/user_white_lists/:id(.:format)
@@ -139,6 +163,7 @@ class OnApp_User_WhiteList extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name
                  * @method POST
                  * @alias  /users/:user_id/user_white_lists(.:format)
@@ -146,20 +171,20 @@ class OnApp_User_WhiteList extends OnApp {
                  */
                 /**
                  * ROUTE :
+                 *
                  * @name user_vm_stats
                  * @method DELETE
                  * @alias   /users/:user_id/user_white_lists/:id(.:format)
                  * @format  {:controller=>"user_white_lists", :action=>"destroy"}
                  */
-                if( is_null( $this->_user_id ) && is_null( $this->_obj->_user_id ) ) {
+                if ( is_null( $this->_user_id ) && is_null( $this->_obj->_user_id ) ) {
                     $this->logger->error(
                         "getResource($action): argument _user_id not set.",
                         __FILE__,
                         __LINE__
                     );
-                }
-                else {
-                    if( is_null( $this->_user_id ) ) {
+                } else {
+                    if ( is_null( $this->_user_id ) ) {
                         $this->_user_id = $this->_obj->_user_id;
                     }
                 }
@@ -184,17 +209,16 @@ class OnApp_User_WhiteList extends OnApp {
      * @return mixed an array of Object instances on success. Otherwise false
      * @access public
      */
-    function getList( $user_id = null ) {
-        if( is_null( $user_id ) && ! is_null( $this->_user_id ) ) {
+    function getList( $user_id = null, $url_args = null ) {
+        if ( is_null( $user_id ) && ! is_null( $this->_user_id ) ) {
             $user_id = $this->_user_id;
         }
 
-        if( ! is_null( $user_id ) ) {
+        if ( ! is_null( $user_id ) ) {
             $this->_user_id = $user_id;
 
             return parent::getList();
-        }
-        else {
+        } else {
             $this->logger->error(
                 'getList: argument _user_id not set.',
                 __FILE__,
@@ -210,38 +234,38 @@ class OnApp_User_WhiteList extends OnApp {
      * The key field Parameter ID is used to load the Object. You can re-set
      * this parameter in the class inheriting OnApp class.
      *
-     * @param integer $id      white list id
+     * @param integer $id white list id
      * @param integer $user_id User id
      *
      * @return mixed serialized Object instance from API
      * @access public
      */
     function load( $id = null, $user_id = null ) {
-        if( is_null( $user_id ) && ! is_null( $this->_user_id ) ) {
+        if ( is_null( $user_id ) && ! is_null( $this->_user_id ) ) {
             $user_id = $this->_user_id;
         }
 
-        if( is_null( $user_id ) &&
-            isset( $this->_obj ) &&
-            ! is_null( $this->_obj->_user_id )
+        if ( is_null( $user_id ) &&
+             isset( $this->_obj ) &&
+             ! is_null( $this->_obj->_user_id )
         ) {
             $user_id = $this->_obj->_user_id;
         }
 
-        if( is_null( $id ) && ! is_null( $this->_id ) ) {
+        if ( is_null( $id ) && ! is_null( $this->_id ) ) {
             $id = $this->_id;
         }
 
-        if( is_null( $id ) &&
-            isset( $this->_obj ) &&
-            ! is_null( $this->_obj->_id )
+        if ( is_null( $id ) &&
+             isset( $this->_obj ) &&
+             ! is_null( $this->_obj->_id )
         ) {
             $id = $this->_obj->_id;
         }
 
         $this->logger->add( 'load: Load class ( id => ' . $id . ' ).' );
 
-        if( ! is_null( $id ) && ! is_null( $user_id ) ) {
+        if ( ! is_null( $id ) && ! is_null( $user_id ) ) {
             $this->_id      = $id;
             $this->_user_id = $user_id;
 
@@ -254,16 +278,14 @@ class OnApp_User_WhiteList extends OnApp {
             $this->_obj = $result;
 
             return $result;
-        }
-        else {
-            if( is_null( $id ) ) {
+        } else {
+            if ( is_null( $id ) ) {
                 $this->logger->error(
                     'load: argument _id not set.',
                     __FILE__,
                     __LINE__
                 );
-            }
-            else {
+            } else {
                 $this->logger->error(
                     'load: argument _user_id not set.',
                     __FILE__,
