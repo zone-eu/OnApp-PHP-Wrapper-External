@@ -149,6 +149,24 @@ class OnApp_VirtualMachine_FirewallRule extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -401,13 +419,41 @@ class OnApp_VirtualMachine_FirewallRule extends OnApp {
             $this->_virtual_machine_id = $virtual_machine_id;
         }
 
+        $network_interfaces = array();
         foreach ( $networkInterfaces as $interface_id => $command ) {
-            $network_interfaces[ $interface_id ]['default_firewall_rule'] = $command;
+            $network_interfaces[ $interface_id ] = array(
+                'default_firewall_rule' => $command,
+            );
         }
+        if ( $network_interfaces ) {
+            $data = array(
+                'root' => 'network_interfaces',
+                'data' => $network_interfaces
+            );
+            $this->sendPut( ONAPP_GETRESOURCE_UPDATE_DEFAULTS, $data );
+        }
+    }
+
+    function useAsGateway( $virtual_machine_id, $networkInterface ) {
+        if ( $virtual_machine_id ) {
+            $this->_virtual_machine_id = $virtual_machine_id;
+        }
+
+        if ( ! $networkInterface ) {
+            return;
+        }
+
+        $networkInterfaces = array(
+            $networkInterface => array(
+                'use_as_gateway' => "1",
+            ),
+        );
+
         $data = array(
             'root' => 'network_interfaces',
-            'data' => $network_interfaces
+            'data' => $networkInterfaces,
         );
         $this->sendPut( ONAPP_GETRESOURCE_UPDATE_DEFAULTS, $data );
     }
+
 }

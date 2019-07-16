@@ -93,6 +93,32 @@ class OnApp_VirtualMachine_Log extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.2 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                $this->fields['resource_diff_id'] = array(
+                    ONAPP_FIELD_MAP  => '_resource_diff_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                $this->fields['resource_diff_ids'] = array(
+                    ONAPP_FIELD_MAP  => '_resource_diff_ids',
+                    ONAPP_FIELD_TYPE => 'array',
+                );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );

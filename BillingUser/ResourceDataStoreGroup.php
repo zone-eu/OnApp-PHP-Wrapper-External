@@ -140,6 +140,24 @@ class OnApp_BillingUser_ResourceDataStoreGroup extends OnApp_BillingUser_BaseRes
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         $this->fields['id'][ ONAPP_FIELD_REQUIRED ] = false;
@@ -166,7 +184,7 @@ class OnApp_BillingUser_ResourceDataStoreGroup extends OnApp_BillingUser_BaseRes
             $dataArray['price_off'] = $price_off;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
 
@@ -186,7 +204,7 @@ class OnApp_BillingUser_ResourceDataStoreGroup extends OnApp_BillingUser_BaseRes
             $dataArray['price_data_read'] = $price_data_read;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
 
@@ -206,7 +224,7 @@ class OnApp_BillingUser_ResourceDataStoreGroup extends OnApp_BillingUser_BaseRes
             $dataArray['price_data_written'] = $price_data_written;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
 
@@ -226,7 +244,7 @@ class OnApp_BillingUser_ResourceDataStoreGroup extends OnApp_BillingUser_BaseRes
             $dataArray['price_reads_completed'] = $price_reads_completed;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
 
@@ -246,7 +264,7 @@ class OnApp_BillingUser_ResourceDataStoreGroup extends OnApp_BillingUser_BaseRes
             $dataArray['price_writes_completed'] = $price_writes_completed;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
 

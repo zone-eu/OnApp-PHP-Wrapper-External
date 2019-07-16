@@ -146,6 +146,54 @@ class OnApp_UserGroup extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields                      = $this->initFields( 5.4 );
+                $this->fields['additional_fields'] = array(
+                    ONAPP_FIELD_MAP  => '_additional_fields',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $fields       = array(
+                    'assign_to_vcloud',
+                    'role_id',
+                    'billing_plan_id',
+                );
+                $this->unsetFields( $fields );
+                $this->fields['role_ids']         = array(
+                    ONAPP_FIELD_MAP   => '_role_ids',
+                    ONAPP_FIELD_TYPE  => 'array',
+                );
+                $this->fields['billing_plan_ids'] = array(
+                    ONAPP_FIELD_MAP   => '_billing_plan_ids',
+                    ONAPP_FIELD_TYPE  => 'array',
+                );
+                $this->fields['bucket_id']       = array(
+                    ONAPP_FIELD_MAP   => '_bucket_id',
+                    ONAPP_FIELD_TYPE  => 'integer',
+                );
+                $this->fields['user_buckets']       = array(
+                    ONAPP_FIELD_MAP   => '_user_buckets',
+                    ONAPP_FIELD_TYPE  => 'array',
+                );
+                $this->fields['assign_vcloud_roles']       = array(
+                    ONAPP_FIELD_MAP   => '_assign_vcloud_roles',
+                    ONAPP_FIELD_TYPE  => 'boolean',
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );

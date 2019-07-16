@@ -19,6 +19,11 @@
 define( 'ONAPP_GETRESOURCE_DEPLOY', 'deploy' );
 
 /**
+ *
+ */
+define( 'ONAPP_CLONE_ORCHESTRATION_MODEL', 'clone' );
+
+/**
  * Orchestration Models
  *
  */
@@ -325,14 +330,37 @@ class OnApp_OrchestrationModel extends OnApp {
                         ONAPP_FIELD_MAP  => '_user_group_id',
                         ONAPP_FIELD_TYPE => 'string',
                     ),
-
-
-
                 );
                 break;
             case 4.3:
             case 5.0:
                 $this->fields = $this->initFields( 4.2 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['networks_created']   = array(
+                    ONAPP_FIELD_MAP  => '_networks_created',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['name']               = array(
+                    ONAPP_FIELD_MAP  => '_name',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
                 break;
         }
 
@@ -365,6 +393,17 @@ class OnApp_OrchestrationModel extends OnApp {
                 }
                 $resource = $this->_resource . '/' . $this->_id . '/deploy';
                 break;
+            case ONAPP_CLONE_ORCHESTRATION_MODEL:
+                /**
+                 * ROUTE :
+                 *
+                 * @name vcloud_template
+                 * @method PUT
+                 * @alias   /vcloud/templates/:id/clone(.:format)
+                 * @format  {:controller=>"vcloud_template", :action=>"clone"}
+                 */
+                $resource = $this->_resource . '/' . $this->_id . '/' . ONAPP_CLONE_ORCHESTRATION_MODEL;
+                break;
             default:
                 /**
                  * ROUTE :
@@ -382,6 +421,14 @@ class OnApp_OrchestrationModel extends OnApp {
                  * @alias    /vcloud/templates/:id(.:format)
                  * @format   {:controller=>"vapp_template_groups", :action=>"show"}
                  */
+                /**
+                 * ROUTE :
+                 *
+                 * @name vcloud_template
+                 * @method PUT
+                 * @alias    /vcloud/templates/:id(.:format)
+                 * @format   {:controller=>"vapp_template_groups", :action=>"edit"}
+                 */
                 $resource = parent::getResource( $action );
                 break;
         }
@@ -390,6 +437,23 @@ class OnApp_OrchestrationModel extends OnApp {
     }
 
     public function deploy() {
-        return $this->sendPost( ONAPP_GETRESOURCE_DEPLOY );
+        $data = $this->getSerializedDataToSend();
+        
+        return $this->sendPost( ONAPP_GETRESOURCE_DEPLOY, $data );
+    }
+
+    public function cloneOrchestrationModel($id){
+        if ( is_null( $id ) ) {
+            $this->logger->error(
+                'cloudConfig: argument _id not set.',
+                __FILE__,
+                __LINE__
+            );
+        }
+        $this->_id = $id;
+
+        $res = $this->sendPut( ONAPP_CLONE_ORCHESTRATION_MODEL );
+
+        return $res;
     }
 }

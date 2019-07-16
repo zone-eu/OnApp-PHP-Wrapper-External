@@ -275,6 +275,44 @@ class OnApp_Profile extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                $this->fields['cdn_reference'] = array(
+                    ONAPP_FIELD_MAP  => '_cdn_reference',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+           case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['bucket_id']                  = array(
+                    ONAPP_FIELD_MAP  => '_bucket_id',
+                    ONAPP_FIELD_TYPE => 'integer',
+                );
+                $this->fields['discount_due_to_free']       = array(
+                    ONAPP_FIELD_MAP  => '_discount_due_to_free',
+                    ONAPP_FIELD_TYPE => 'float',
+                );
+                $this->fields['monthly_price']              = array(
+                    ONAPP_FIELD_MAP  => '_monthly_price',
+                    ONAPP_FIELD_TYPE => 'float',
+                );
+                $this->fields['total_amount_with_discount'] = array(
+                    ONAPP_FIELD_MAP  => '_total_amount_with_discount',
+                    ONAPP_FIELD_TYPE => 'float',
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );

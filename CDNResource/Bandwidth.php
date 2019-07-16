@@ -87,6 +87,28 @@ class OnApp_CDNResource_Bandwidth extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->logger->error(
+                    'cdn_resources/bandwidth.: Removed the deprecated requests',
+                    __FILE__,
+                    __LINE__
+                );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
