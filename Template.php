@@ -19,6 +19,7 @@
  */
 
 define( 'ONAPP_GET_USERTEMPLATES_LIST', 'user' );
+define( 'ONAPP_GET_ALL_TEMPLATES', 'all' );
 
 /**
  * Templates
@@ -274,6 +275,40 @@ class OnApp_Template extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                $fields       = array(
+                    'virtualization_array',
+                );
+                $this->unsetFields( $fields );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                $this->fields['properties'] = array(
+                    ONAPP_FIELD_MAP  => '_properties',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                $this->fields['locked'] = array(
+                    ONAPP_FIELD_MAP  => '_locked',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                $this->fields['openstack_id'] = array(
+                    ONAPP_FIELD_MAP  => '_openstack_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -291,7 +326,9 @@ class OnApp_Template extends OnApp {
             case 'user':
                 $resource = $this->getResource( ONAPP_GETRESOURCE_LIST ) . '/' . ONAPP_GET_USERTEMPLATES_LIST;
                 break;
-
+            case ONAPP_GET_ALL_TEMPLATES:
+                $resource = $this->getResource( ONAPP_GETRESOURCE_LIST ) . '/' . ONAPP_GET_ALL_TEMPLATES;
+                break;
             default:
                 /**
                  * ROUTE :
@@ -329,5 +366,9 @@ class OnApp_Template extends OnApp {
                 exit( 'Call to undefined method ' . __CLASS__ . '::' . $action_name . '()' );
                 break;
         }
+    }
+
+    function getAll() {
+        return $this->sendGet( ONAPP_GET_ALL_TEMPLATES );
     }
 }

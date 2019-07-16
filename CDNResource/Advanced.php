@@ -256,6 +256,29 @@ class OnApp_CDNResource_Advanced extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $fields       = array(
+                    'proxy_read_time_out',
+                    'proxy_connect_time_out',
+                );
+                $this->unsetFields( $fields );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -281,7 +304,7 @@ class OnApp_CDNResource_Advanced extends OnApp {
             $this->_countries = array( '' );
         }
 
-        if ( is_null( $this->_secondary_hostnames ) && isset( $this->_obj ) && count( $this->_obj->_secondary_hostnames ) != 0 ) {
+        if ( is_null( $this->_secondary_hostnames ) && isset( $this->_obj ) && is_countable($this->_obj->_secondary_hostnames) && count( $this->_obj->_secondary_hostnames ) != 0 ) {
             $this->_secondary_hostnames = $this->_obj->_secondary_hostnames;
         } else {
             $this->_secondary_hostnames = array( '' );

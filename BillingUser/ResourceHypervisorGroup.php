@@ -190,6 +190,24 @@ class OnApp_BillingUser_ResourceHypervisorGroup extends OnApp_BillingUser_BaseRe
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         $this->fields['id'][ ONAPP_FIELD_REQUIRED ] = false;
@@ -219,7 +237,7 @@ class OnApp_BillingUser_ResourceHypervisorGroup extends OnApp_BillingUser_BaseRe
             $dataArray['limit_default_cpu'] = $limit_default_cpu;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
         $data = array(
@@ -258,7 +276,7 @@ class OnApp_BillingUser_ResourceHypervisorGroup extends OnApp_BillingUser_BaseRe
             $dataArray['limit_default_cpu_share'] = $limit_default_cpu_share;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
         $data = array(
@@ -294,7 +312,7 @@ class OnApp_BillingUser_ResourceHypervisorGroup extends OnApp_BillingUser_BaseRe
             $dataArray['price_off_memory'] = $price_off_memory;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
         $data = array(
@@ -319,7 +337,7 @@ class OnApp_BillingUser_ResourceHypervisorGroup extends OnApp_BillingUser_BaseRe
             $dataArray['price_off_cpu_units'] = $price_off_cpu_units;
         }
 
-        if ( count( $dataArray ) == 0 ) {
+        if ( !is_countable($dataArray) || count( $dataArray ) == 0 ) {
             return false;
         }
         $data = array(

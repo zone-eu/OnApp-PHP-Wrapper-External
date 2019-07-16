@@ -18,6 +18,12 @@
 define( 'ONAPP_GETRESOURCE_ASSETS_GET_UNASSIGNED', 'assets_get_unassigned' );
 
 /**
+ *
+ *
+ */
+define( 'ONAPP_GETRESOURCE_ASSETS_EDIT_HYPERVISORS', 'assets_edit_hypervisors' );
+
+/**
  * Managing Asset
  *
  *
@@ -87,6 +93,40 @@ class OnApp_Asset extends OnApp_Hypervisor {
             case 5.0:
                 $this->fields = $this->initFields( 4.2 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                $this->fields['integrated_storage_disabled'] = array(
+                    ONAPP_FIELD_MAP  => '_integrated_storage_disabled',
+                    ONAPP_FIELD_TYPE => 'boolean',
+                );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                $this->fields['apply_hypervisor_group_custom_config'] = array(
+                    ONAPP_FIELD_MAP  => '_apply_hypervisor_group_custom_config',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['segregation_os_type']                  = array(
+                    ONAPP_FIELD_MAP  => '_segregation_os_type',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                $this->fields['failover_recipe_id']                   = array(
+                    ONAPP_FIELD_MAP  => '_failover_recipe_id',
+                    ONAPP_FIELD_TYPE => 'string',
+                );
+                break;
         }
 
 
@@ -101,7 +141,26 @@ class OnApp_Asset extends OnApp_Hypervisor {
                  */
                 $resource = 'hypervisors/not_grouped';
                 break;
-
+            case ONAPP_GETRESOURCE_ASSETS_EDIT_HYPERVISORS:
+                /**
+                 * ROUTE :
+                 *
+                 * @method PUT
+                 * @alias   /settings/assets/:asset_mac_address/hypervisors
+                 */
+                if ( is_null( $this->_asset_mac_address ) && is_null( $this->_obj->_asset_mac_address ) ) {
+                    $this->logger->error(
+                        'getResource( ' . $action . ' ): argument _asset_mac_address not set.',
+                        __FILE__,
+                        __LINE__
+                    );
+                } else {
+                    if ( is_null( $this->_asset_mac_address ) ) {
+                        $this->_asset_mac_address = $this->_obj->_asset_mac_address;
+                    }
+                }
+                $resource = 'settings/assets/' . $this->_asset_mac_address . '/hypervisors';
+                break;
             default:
                 /**
                  * @alias   /settings/assets/:asset_mac_address.json
@@ -130,6 +189,30 @@ class OnApp_Asset extends OnApp_Hypervisor {
 
             return $result;
         }
+    }
+    
+    public function assetsAddHypervisors(){
+        
+        $this->sendPost( ONAPP_GETRESOURCE_ASSETS_EDIT_HYPERVISORS, $this->getData() );
+    }
+    
+    public function assetsEditHypervisors(){
+        
+        $this->sendPut( ONAPP_GETRESOURCE_ASSETS_EDIT_HYPERVISORS, $this->getData() );
+    }
+    
+    private function getData(){
+        $data = array(
+            'root' => 'hypervisor'
+        );
+        foreach ($this->fields as $key => $value) {
+            $property = $value[ ONAPP_FIELD_MAP ];
+            if (!is_null($this->$property) && !isset($value[ONAPP_FIELD_READ_ONLY])) {
+                $data['data'][$key] = $this->$property;
+            }
+        }
+        
+        return $data;
     }
 
 

@@ -151,6 +151,24 @@ class OnApp_DNSZone_Record extends OnApp {
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
                 break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
+                break;
         }
 
         parent::initFields( $version, __CLASS__ );
@@ -320,6 +338,10 @@ class OnApp_DNSZone_Record extends OnApp {
         }
 
         switch ( $this->_type ) {
+            case 'PTR':
+                $this->fields['hostname'][ ONAPP_FIELD_REQUIRED ] =
+                    true;
+                break;
             case 'MX':
                 $this->fields['priority'][ ONAPP_FIELD_REQUIRED ] =
                 $this->fields['hostname'][ ONAPP_FIELD_REQUIRED ] =
@@ -373,7 +395,7 @@ class OnApp_DNSZone_Record extends OnApp {
 
             $dns_records = array();
 
-            foreach ( array( 'MX', 'SRV', 'A', 'CNAME', 'AAAA', 'TXT', 'NS', 'SOA' ) as $type ) {
+            foreach ( array( 'MX', 'SRV', 'A', 'CNAME', 'AAAA', 'TXT', 'NS', 'SOA', 'PTR' ) as $type ) {
                 if ( array_key_exists( $type, $records ) ) {
                     $dns_records = array_merge( $dns_records, $records[ $type ] );
                 }

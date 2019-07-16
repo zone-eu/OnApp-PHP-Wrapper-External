@@ -60,11 +60,6 @@ class OnApp_CDNResource_Advanced_Country extends OnApp {
                         ONAPP_FIELD_TYPE      => 'string',
                         ONAPP_FIELD_READ_ONLY => true,
                     ),
-                    'continent'  => array(
-                        ONAPP_FIELD_MAP       => '_continent',
-                        ONAPP_FIELD_TYPE      => 'string',
-                        ONAPP_FIELD_READ_ONLY => true,
-                    ),
                     'created_at' => array(
                         ONAPP_FIELD_MAP       => '_created_at',
                         ONAPP_FIELD_TYPE      => 'string',
@@ -104,6 +99,24 @@ class OnApp_CDNResource_Advanced_Country extends OnApp {
                 break;
             case 5.0:
                 $this->fields = $this->initFields( 4.3 );
+                break;
+            case 5.1:
+                $this->fields = $this->initFields( 5.0 );
+                break;
+            case 5.2:
+                $this->fields = $this->initFields( 5.1 );
+                break;
+            case 5.3:
+                $this->fields = $this->initFields( 5.2 );
+                break;
+            case 5.4:
+                $this->fields = $this->initFields( 5.3 );
+                break;
+            case 5.5:
+                $this->fields = $this->initFields( 5.4 );
+                break;
+            case 6.0:
+                $this->fields = $this->initFields( 5.5 );
                 break;
         }
 
