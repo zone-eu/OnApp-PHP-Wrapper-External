@@ -797,6 +797,11 @@ class OnApp_VirtualMachine extends OnApp {
                 ONAPP_FIELD_REQUIRED      => true,
                 ONAPP_FIELD_DEFAULT_VALUE => false
             );
+
+            $this->fields['selected_ip_address'] = array(
+                ONAPP_FIELD_MAP  => '_selected_ip_address',
+                ONAPP_FIELD_TYPE => 'string',
+            );
         }
 
         parent::initFields( $version, __CLASS__ );
